@@ -81,6 +81,14 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/scripts</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>com.mycila</groupId>
@@ -97,6 +105,10 @@
           <excludes>
             <exclude>src/conf/**</exclude>
           </excludes>
+          <mapping>
+            <idl>SLASHSTAR_STYLE</idl>
+            <rpt>SCRIPT_STYLE</rpt>
+          </mapping>
           <failIfUnknown>true</failIfUnknown>
         </configuration>
         <executions>
