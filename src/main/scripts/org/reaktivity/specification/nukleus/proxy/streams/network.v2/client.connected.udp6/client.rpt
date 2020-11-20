@@ -18,16 +18,17 @@ connect await ROUTED_SERVER
         "nukleus://streams/proxy#0"
     option nukleus:window 8192
     option nukleus:transmission "duplex"
-
-write nukleus:begin.ext ${proxy:beginEx()
-                               .typeId(nukleus:id("proxy"))
-                               .addressInet()
-                                 .protocol("datagram")
-                                 .source("192.168.0.1")
-                                 .destination("192.168.0.254")
-                                 .sourcePort(32768)
-                                 .destinationPort(443)
-                                 .build()
-                               .build()}
-
 connected
+
+write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
+
+write [0x21]                                        # version = 2, command = proxy
+      [0x22]                                        # protocol = udp6
+      [0x24]                                        # length
+      [0xfd 0x12 0x34 0x56 0x78 0x9a 0x00 0x01]     # source address = fd12:3456:789a:1::1
+      [0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01]
+      [0xfd 0x12 0x34 0x56 0x78 0x9a 0x00 0x01]     # destination address = fd12:3456:789a:1::fe
+      [0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xfe]
+      [0x80 0x00]                                   # source port = 32768
+      [0x01 0xbb]                                   # destination port = 443
+write flush

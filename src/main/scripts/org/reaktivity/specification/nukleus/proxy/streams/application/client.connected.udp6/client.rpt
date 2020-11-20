@@ -21,10 +21,10 @@ connect await ROUTED_SERVER
 
 write nukleus:begin.ext ${proxy:beginEx()
                                .typeId(nukleus:id("proxy"))
-                               .addressInet()
+                               .addressInet6()
                                  .protocol("datagram")
-                                 .source("192.168.0.1")
-                                 .destination("192.168.0.254")
+                                 .source("fd12:3456:789a:1::1")
+                                 .destination("fd12:3456:789a:1::fe")
                                  .sourcePort(32768)
                                  .destinationPort(443)
                                  .build()

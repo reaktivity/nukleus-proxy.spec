@@ -71,6 +71,28 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/client.connected.tcp6/client",
+        "${scripts}/client.connected.tcp6/server"})
+    public void shouldProxyClientConnectedTcp6() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.udp6/client",
+        "${scripts}/client.connected.udp6/server"})
+    public void shouldProxyClientConnectedUdp6() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/client.sent.data/client",
         "${scripts}/client.sent.data/server"})
     public void shouldProxyClientSentData() throws Exception

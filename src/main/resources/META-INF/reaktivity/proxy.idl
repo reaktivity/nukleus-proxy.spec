@@ -39,6 +39,7 @@ scope proxy
 
     struct ProxyAddressInet6
     {
+        ProxyAddressProtocol protocol;
         octets[16] source;
         octets[16] destination;
         uint16 sourcePort;
