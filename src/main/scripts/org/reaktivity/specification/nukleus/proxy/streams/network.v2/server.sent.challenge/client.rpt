@@ -20,4 +20,11 @@ connect await ROUTED_SERVER
     option nukleus:transmission "duplex"
 connected
 
-read advised nukleus:flush
+write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
+
+write [0x20]                                        # version = 2, command = local
+      [0x00]                                        # protocol = unspecified
+      [0x00]                                        # length
+write flush
+
+write advised nukleus:challenge

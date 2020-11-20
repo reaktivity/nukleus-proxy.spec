@@ -14,13 +14,8 @@
 # under the License.
 #
 
-property serverAddress "nukleus://streams/proxy#0"
-
-accept ${serverAddress}
-       option nukleus:window 8192
-       option nukleus:transmission "duplex"
-accepted
-
+connect await ROUTED_SERVER
+        "nukleus://streams/proxy#0"
+    option nukleus:window 8192
+    option nukleus:transmission "duplex"
 connected
-
-write "Hello, world"

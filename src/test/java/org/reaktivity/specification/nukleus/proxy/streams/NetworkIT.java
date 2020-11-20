@@ -29,7 +29,7 @@ import org.kaazing.k3po.junit.rules.K3poRule;
 public class NetworkIT
 {
     private final K3poRule k3po = new K3poRule()
-        .addScriptRoot("scripts", "org/reaktivity/specification/nukleus/proxy/streams/network");
+        .addScriptRoot("scripts", "org/reaktivity/specification/nukleus/proxy/streams/network.v2");
 
     private final TestRule timeout = new DisableOnDebug(new Timeout(5, SECONDS));
 
@@ -41,6 +41,17 @@ public class NetworkIT
         "${scripts}/client.connected/client",
         "${scripts}/client.connected/server"})
     public void shouldProxyClientConnected() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.tcp4/client",
+        "${scripts}/client.connected.tcp4/server"})
+    public void shouldProxyClientConnectedTcp4() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");

@@ -49,6 +49,17 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/client.connected.tcp4/client",
+        "${scripts}/client.connected.tcp4/server"})
+    public void shouldProxyClientConnectedTcp4() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/client.sent.data/client",
         "${scripts}/client.sent.data/server"})
     public void shouldProxyClientSentData() throws Exception
