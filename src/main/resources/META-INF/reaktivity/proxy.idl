@@ -48,6 +48,7 @@ scope proxy
 
     struct ProxyAddressUnix
     {
+        ProxyAddressProtocol protocol;
         octets[108] source;
         octets[108] destination;
     }

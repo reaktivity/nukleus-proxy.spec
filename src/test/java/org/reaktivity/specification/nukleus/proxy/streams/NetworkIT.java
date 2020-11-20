@@ -93,6 +93,28 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/client.connected.sock.stream/client",
+        "${scripts}/client.connected.sock.stream/server"})
+    public void shouldProxyClientConnectedSockStream() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.sock.datagram/client",
+        "${scripts}/client.connected.sock.datagram/server"})
+    public void shouldProxyClientConnectedSockDatagram() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/client.sent.data/client",
         "${scripts}/client.sent.data/server"})
     public void shouldProxyClientSentData() throws Exception

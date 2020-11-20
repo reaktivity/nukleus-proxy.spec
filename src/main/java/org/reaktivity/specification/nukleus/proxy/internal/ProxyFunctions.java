@@ -17,6 +17,7 @@ package org.reaktivity.specification.nukleus.proxy.internal;
 
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +35,7 @@ import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInet6FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressUnixFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.control.ProxyRouteExFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.stream.ProxyBeginExFW;
 
@@ -101,6 +103,11 @@ public final class ProxyFunctions
         public ProxyAddressInet6Builder addressInet6()
         {
             return new ProxyAddressInet6Builder();
+        }
+
+        public ProxyAddressUnixBuilder addressUnix()
+        {
+            return new ProxyAddressUnixBuilder();
         }
 
         public byte[] build()
@@ -228,6 +235,51 @@ public final class ProxyFunctions
                 return ProxyBeginExBuilder.this;
             }
         }
+
+        public final class ProxyAddressUnixBuilder
+        {
+            private final ProxyAddressFW.Builder addressRW = new ProxyAddressFW.Builder();
+
+            private final ProxyAddressUnixFW.Builder addressUnixRW = new ProxyAddressUnixFW.Builder();
+
+            private ProxyAddressUnixBuilder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[218]);
+                addressRW.wrap(buffer, 0, buffer.capacity());
+                addressUnixRW.wrap(buffer, 1, buffer.capacity());
+            }
+
+            public ProxyAddressUnixBuilder protocol(
+                String protocol)
+            {
+                addressUnixRW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                return this;
+            }
+
+            public ProxyAddressUnixBuilder source(
+                String source) throws UnknownHostException
+            {
+                MutableDirectBuffer sourceBuf = new UnsafeBuffer(new byte[108]);
+                sourceBuf.putStringWithoutLengthUtf8(0, source);
+                addressUnixRW.source(sourceBuf, 0, sourceBuf.capacity());
+                return this;
+            }
+
+            public ProxyAddressUnixBuilder destination(
+                String destination) throws UnknownHostException
+            {
+                MutableDirectBuffer destinationBuf = new UnsafeBuffer(new byte[108]);
+                destinationBuf.putStringWithoutLengthUtf8(0, destination);
+                addressUnixRW.destination(destinationBuf, 0, destinationBuf.capacity());
+                return this;
+            }
+
+            public ProxyBeginExBuilder build()
+            {
+                beginExRW.address(addressRW.unix(addressUnixRW.build()).build());
+                return ProxyBeginExBuilder.this;
+            }
+        }
     }
 
     public static final class ProxyBeginExMatcherBuilder
@@ -257,6 +309,14 @@ public final class ProxyFunctions
         public ProxyAddressInet6MatcherBuilder addressInet6()
         {
             final ProxyAddressInet6MatcherBuilder matcher = new ProxyAddressInet6MatcherBuilder();
+
+            this.address = matcher::match;
+            return matcher;
+        }
+
+        public ProxyAddressUnixMatcherBuilder addressUnix()
+        {
+            final ProxyAddressUnixMatcherBuilder matcher = new ProxyAddressUnixMatcherBuilder();
 
             this.address = matcher::match;
             return matcher;
@@ -292,7 +352,7 @@ public final class ProxyFunctions
         private boolean matchTypeId(
             ProxyBeginExFW beginEx)
         {
-            return typeId == null || typeId == beginEx.typeId();
+            return typeId == beginEx.typeId();
         }
 
         private boolean matchAddress(
@@ -477,33 +537,106 @@ public final class ProxyFunctions
             }
 
             private boolean matchProtocol(
-                final ProxyAddressInet6FW inet)
+                final ProxyAddressInet6FW inet6)
             {
-                return protocol == null || protocol == inet.protocol().get();
+                return protocol == null || protocol == inet6.protocol().get();
             }
 
             private boolean matchSource(
-                final ProxyAddressInet6FW inet)
+                final ProxyAddressInet6FW inet6)
             {
-                return source == null || source.equals(inet.source());
+                return source == null || source.equals(inet6.source());
             }
 
             private boolean matchDestination(
-                final ProxyAddressInet6FW inet)
+                final ProxyAddressInet6FW inet6)
             {
-                return destination == null || destination.equals(inet.destination());
+                return destination == null || destination.equals(inet6.destination());
             }
 
             private boolean matchSourcePort(
-                final ProxyAddressInet6FW inet)
+                final ProxyAddressInet6FW inet6)
             {
-                return sourcePort == null || sourcePort == inet.sourcePort();
+                return sourcePort == null || sourcePort == inet6.sourcePort();
             }
 
             private boolean matchDestinationPort(
-                final ProxyAddressInet6FW inet)
+                final ProxyAddressInet6FW inet6)
             {
-                return destinationPort == null || destinationPort == inet.destinationPort();
+                return destinationPort == null || destinationPort == inet6.destinationPort();
+            }
+        }
+
+        public final class ProxyAddressUnixMatcherBuilder
+        {
+            private ProxyAddressProtocol protocol;
+            private DirectBuffer source;
+            private DirectBuffer destination;
+
+            private ProxyAddressUnixMatcherBuilder()
+            {
+            }
+
+            public ProxyAddressUnixMatcherBuilder protocol(
+                String protocol)
+            {
+                this.protocol = ProxyAddressProtocol.valueOf(protocol.toUpperCase());
+                return this;
+            }
+
+            public ProxyAddressUnixMatcherBuilder source(
+                String source)
+            {
+                final MutableDirectBuffer sourceBuf = new UnsafeBuffer(new byte[108]);
+                sourceBuf.putStringWithoutLengthUtf8(0, source);
+                this.source = sourceBuf;
+                return this;
+            }
+
+            public ProxyAddressUnixMatcherBuilder destination(
+                String destination)
+            {
+                final MutableDirectBuffer destinationBuf = new UnsafeBuffer(new byte[108]);
+                destinationBuf.putStringWithoutLengthUtf8(0, destination);
+                this.destination = destinationBuf;
+                return this;
+            }
+
+            public ProxyBeginExMatcherBuilder build()
+            {
+                return ProxyBeginExMatcherBuilder.this;
+            }
+
+            private boolean match(
+                ProxyAddressFW address)
+            {
+                return address.kind() == UNIX && match(address.unix());
+            }
+
+            private boolean match(
+                ProxyAddressUnixFW unix)
+            {
+                return matchProtocol(unix) &&
+                    matchSource(unix) &&
+                    matchDestination(unix);
+            }
+
+            private boolean matchProtocol(
+                final ProxyAddressUnixFW unix)
+            {
+                return protocol == null || protocol == unix.protocol().get();
+            }
+
+            private boolean matchSource(
+                final ProxyAddressUnixFW unix)
+            {
+                return source == null || source.equals(unix.source().value());
+            }
+
+            private boolean matchDestination(
+                final ProxyAddressUnixFW unix)
+            {
+                return destination == null || destination.equals(unix.destination().value());
             }
         }
     }
