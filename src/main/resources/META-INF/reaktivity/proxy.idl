@@ -15,6 +15,42 @@
  */
 scope proxy
 {
+    struct ProxyAddressInet
+    {
+        octets[4] source;
+        octets[4] destination;
+        uint16 sourcePort;
+        uint16 destinationPort;
+    }
+
+    struct ProxyAddressInet6
+    {
+        octets[16] source;
+        octets[16] destination;
+        uint16 sourcePort;
+        uint16 destinationPort;
+    }
+
+    struct ProxyAddressUnix
+    {
+        octets[108] source;
+        octets[108] destination;
+    }
+
+    enum ProxyAddressFamily
+    {
+        INET,
+        INET6,
+        UNIX
+    }
+
+    union ProxyAddress switch (ProxyAddressFamily)
+    {
+        case INET: ProxyAddressInet inet;
+        case INET6: ProxyAddressInet6 inet6;
+        case UNIX: ProxyAddressUnix unix;
+    }
+
     scope control
     {
         struct ProxyRouteEx
@@ -26,6 +62,7 @@ scope proxy
     {
         struct ProxyBeginEx extends core::stream::Extension
         {
+            ProxyAddress address;
         }
     }
 }

@@ -15,10 +15,12 @@
  */
 package org.reaktivity.specification.nukleus.proxy.internal;
 
+import static org.agrona.BitUtil.fromHex;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -62,11 +64,22 @@ public class ProxyFunctionsTest
     {
         byte[] build = ProxyFunctions.beginEx()
                                      .typeId(0x01)
+                                     .addressInet()
+                                         .source(fromHex("c0a80001"))
+                                         .destination(fromHex("c0a800fe"))
+                                         .sourcePort(32768)
+                                         .destinationPort(443)
+                                         .build()
                                      .build();
         DirectBuffer buffer = new UnsafeBuffer(build);
         ProxyBeginExFW beginEx = new ProxyBeginExFW().wrap(buffer, 0, buffer.capacity());
         assertNotNull(beginEx);
         assertEquals(0x01, beginEx.typeId());
+        assertEquals(INET, beginEx.address().kind());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), beginEx.address().inet().source().value());
+        assertEquals(new UnsafeBuffer(fromHex("c0a800fe")), beginEx.address().inet().destination().value());
+        assertEquals(32768, beginEx.address().inet().sourcePort());
+        assertEquals(443, beginEx.address().inet().destinationPort());
     }
 
     @Test
@@ -74,15 +87,117 @@ public class ProxyFunctionsTest
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
+                                             .addressInet()
+                                                 .source(fromHex("c0a80001"))
+                                                 .destination(fromHex("c0a800fe"))
+                                                 .sourcePort(32768)
+                                                 .destinationPort(443)
+                                                 .build()
                                              .build();
 
         ByteBuffer byteBuf = ByteBuffer.allocate(1024);
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchBeginExtensionSource() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .addressInet()
+                                                 .source(fromHex("c0a80002"))
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchBeginExtensionDestination() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .addressInet()
+                                                 .destination(fromHex("c0a800fd"))
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchBeginExtensionSourcePort() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .addressInet()
+                                                 .sourcePort(32767)
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchBeginExtensionDestinationPort() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .addressInet()
+                                                 .destinationPort(444)
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
     }
 
     @Test
@@ -107,6 +222,10 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
@@ -123,6 +242,10 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x02)
+            .address(a -> a.inet(i -> i.source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
             .build();
 
         matcher.match(byteBuf);

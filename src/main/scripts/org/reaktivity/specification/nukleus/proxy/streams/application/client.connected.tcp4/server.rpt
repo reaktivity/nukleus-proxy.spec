@@ -21,4 +21,14 @@ accept ${serverAddress}
        option nukleus:transmission "duplex"
 accepted
 
+read nukleus:begin.ext ${proxy:matchBeginEx()
+                              .typeId(nukleus:id("proxy"))
+                              .addressInet()
+                                .source(core:fromHex("c0a80001"))
+                                .destination(core:fromHex("c0a800fe"))
+                                .sourcePort(32768)
+                                .destinationPort(443)
+                                .build()
+                              .build()}
+
 connected
