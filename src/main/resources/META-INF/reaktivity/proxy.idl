@@ -15,8 +15,22 @@
  */
 scope proxy
 {
+    enum ProxyAddressFamily
+    {
+        INET,
+        INET6,
+        UNIX
+    }
+
+    enum ProxyAddressProtocol
+    {
+        STREAM,
+        DATAGRAM
+    }
+
     struct ProxyAddressInet
     {
+        ProxyAddressProtocol protocol;
         octets[4] source;
         octets[4] destination;
         uint16 sourcePort;
@@ -35,13 +49,6 @@ scope proxy
     {
         octets[108] source;
         octets[108] destination;
-    }
-
-    enum ProxyAddressFamily
-    {
-        INET,
-        INET6,
-        UNIX
     }
 
     union ProxyAddress switch (ProxyAddressFamily)

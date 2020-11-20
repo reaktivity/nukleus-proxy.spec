@@ -22,7 +22,7 @@ connect await ROUTED_SERVER
 write nukleus:begin.ext ${proxy:beginEx()
                                .typeId(nukleus:id("proxy"))
                                .addressInet()
-                                 .protocol("stream")
+                                 .protocol("datagram")
                                  .source(core:fromHex("c0a80001"))
                                  .destination(core:fromHex("c0a800fe"))
                                  .sourcePort(32768)

@@ -29,6 +29,7 @@ import org.kaazing.k3po.lang.el.spi.FunctionMapperSpi;
 import org.reaktivity.specification.nukleus.proxy.internal.types.OctetsFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInetFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
 import org.reaktivity.specification.nukleus.proxy.internal.types.control.ProxyRouteExFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.stream.ProxyBeginExFW;
 
@@ -109,8 +110,16 @@ public final class ProxyFunctions
 
             private ProxyAddressInetBuilder()
             {
-                addressRW.wrap(new UnsafeBuffer(new byte[13]), 0, 13);
-                addressInetRW.wrap(addressRW.buffer(), 1, 13);
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[14]);
+                addressRW.wrap(buffer, 0, buffer.capacity());
+                addressInetRW.wrap(buffer, 1, buffer.capacity());
+            }
+
+            public ProxyAddressInetBuilder protocol(
+                String protocol)
+            {
+                addressInetRW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                return this;
             }
 
             public ProxyAddressInetBuilder source(
@@ -215,6 +224,7 @@ public final class ProxyFunctions
 
         public final class ProxyAddressInetMatcherBuilder
         {
+            private ProxyAddressProtocol protocol;
             private OctetsFW source;
             private OctetsFW destination;
             private Integer sourcePort;
@@ -222,6 +232,13 @@ public final class ProxyFunctions
 
             private ProxyAddressInetMatcherBuilder()
             {
+            }
+
+            public ProxyAddressInetMatcherBuilder protocol(
+                String protocol)
+            {
+                this.protocol = ProxyAddressProtocol.valueOf(protocol.toUpperCase());
+                return this;
             }
 
             public ProxyAddressInetMatcherBuilder source(
@@ -266,10 +283,17 @@ public final class ProxyFunctions
             private boolean match(
                 ProxyAddressInetFW inet)
             {
-                return matchSource(inet) &&
+                return matchProtocol(inet) &&
+                    matchSource(inet) &&
                     matchDestination(inet) &&
                     matchSourcePort(inet) &&
                     matchDestinationPort(inet);
+            }
+
+            private boolean matchProtocol(
+                final ProxyAddressInetFW inet)
+            {
+                return protocol == null || protocol == inet.protocol().get();
             }
 
             private boolean matchSource(
