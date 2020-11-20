@@ -44,7 +44,41 @@
     <checkstyle.suppressions.location>src/conf/checkstyle/suppressions.xml</checkstyle.suppressions.location>
     <jacoco.coverage.ratio>1.00</jacoco.coverage.ratio>
     <jacoco.missed.count>0</jacoco.missed.count>
+
+    <junit.version>4.13.1</junit.version>
+
+    <k3po.version>3.1.0</k3po.version>
+    <reaktor.version>0.146</reaktor.version>
+
+    <nukleus.plugin.version>0.64</nukleus.plugin.version>
+    <nukleus.spec.version>0.49</nukleus.spec.version>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kaazing</groupId>
+      <artifactId>k3po.lang</artifactId>
+      <version>${k3po.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.reaktivity</groupId>
+      <artifactId>nukleus.spec</artifactId>
+      <version>${nukleus.spec.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kaazing</groupId>
+      <artifactId>k3po.junit</artifactId>
+      <version>${k3po.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -148,12 +182,46 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.kaazing</groupId>
+        <artifactId>k3po-maven-plugin</artifactId>
+        <version>${k3po.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>start</goal>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.reaktivity</groupId>
+            <artifactId>reaktor</artifactId>
+            <version>${reaktor.version}</version>
+            <type>test-jar</type>
+          </dependency>
+          <dependency>
+            <groupId>org.reaktivity</groupId>
+            <artifactId>reaktor</artifactId>
+            <version>${reaktor.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>2.22.1</version>
         <configuration>
           <argLine>@{argLine}</argLine>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
