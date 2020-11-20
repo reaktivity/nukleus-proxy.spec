@@ -17,9 +17,15 @@ scope proxy
 {
     scope control
     {
+        struct ProxyRouteEx
+        {
+        }
     }
 
     scope stream
     {
+        struct ProxyBeginEx extends core::stream::Extension
+        {
+        }
     }
 }

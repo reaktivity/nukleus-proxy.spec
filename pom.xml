@@ -91,6 +91,23 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.reaktivity</groupId>
+        <artifactId>nukleus-maven-plugin</artifactId>
+        <version>${nukleus.plugin.version}</version>
+        <configuration>
+          <scopeNames>core proxy</scopeNames>
+          <packageName>org.reaktivity.specification.nukleus.proxy.internal.types</packageName>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>validate</goal>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
         <version>3.0</version>
@@ -155,6 +172,9 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.5</version>
         <configuration>
+          <excludes>
+            <exclude>org/reaktivity/specification/nukleus/proxy/internal/types/**/*.class</exclude>
+          </excludes>
           <rules>
             <rule>
               <element>BUNDLE</element>
