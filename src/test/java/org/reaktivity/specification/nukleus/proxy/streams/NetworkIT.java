@@ -38,9 +38,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected/client",
-        "${scripts}/client.connected/server"})
-    public void shouldProxyClientConnected() throws Exception
+        "${scripts}/connected.unspecified/client",
+        "${scripts}/connected.unspecified/server"})
+    public void shouldConnectUnspecified() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -49,9 +49,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4/client",
-        "${scripts}/client.connected.tcp4/server"})
-    public void shouldProxyClientConnectedTcp4() throws Exception
+        "${scripts}/connected.tcp4/client",
+        "${scripts}/connected.tcp4/server"})
+    public void shouldConnectTcp4() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -60,9 +60,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4.tlv.alpn/client",
-        "${scripts}/client.connected.tcp4.tlv.alpn/server"})
-    public void shouldProxyClientConnectedTcp4WithAlpn() throws Exception
+        "${scripts}/connected.tcp4.tlv.alpn/client",
+        "${scripts}/connected.tcp4.tlv.alpn/server"})
+    public void shouldConnectTcp4WithAlpn() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -71,9 +71,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4.tlv.authority/client",
-        "${scripts}/client.connected.tcp4.tlv.authority/server"})
-    public void shouldProxyClientConnectedTcp4WithAuthority() throws Exception
+        "${scripts}/connected.tcp4.tlv.authority/client",
+        "${scripts}/connected.tcp4.tlv.authority/server"})
+    public void shouldConnectTcp4WithAuthority() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -82,9 +82,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4.tlv.crc32c/client",
-        "${scripts}/client.connected.tcp4.tlv.crc32c/server"})
-    public void shouldProxyClientConnectedTcp4WithCrc32c() throws Exception
+        "${scripts}/connected.tcp4.tlv.crc32c/client",
+        "${scripts}/connected.tcp4.tlv.crc32c/server"})
+    public void shouldConnectTcp4WithCrc32c() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -93,9 +93,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.mismatch/client",
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.mismatch/server"})
-    public void shouldProxyClientRejectedTcp4WithCrc32cMismatch() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/server"})
+    public void shouldRejectTcp4WithCrc32cMismatch() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -104,9 +104,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.overflow/client",
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.overflow/server"})
-    public void shouldProxyClientRejectedTcp4WithCrc32cOverflow() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/server"})
+    public void shouldRejectTcp4WithCrc32cOverflow() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -115,9 +115,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.underflow/client",
-        "${scripts}/client.rejected.tcp4.tlv.crc32c.underflow/server"})
-    public void shouldProxyClientRejectedTcp4WithCrc32cUnderflow() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/server"})
+    public void shouldRejectTcp4WithCrc32cUnderflow() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -126,9 +126,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4.tlv.namespace/client",
-        "${scripts}/client.connected.tcp4.tlv.namespace/server"})
-    public void shouldProxyClientConnectedTcp4WithNamespace() throws Exception
+        "${scripts}/connected.tcp4.tlv.namespace/client",
+        "${scripts}/connected.tcp4.tlv.namespace/server"})
+    public void shouldConnectTcp4WithNamespace() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -137,9 +137,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp4.tlv.noop/client",
-        "${scripts}/client.connected.tcp4.tlv.noop/server"})
-    public void shouldProxyClientConnectedTcp4WithNoop() throws Exception
+        "${scripts}/connected.tcp4.tlv.noop/client",
+        "${scripts}/connected.tcp4.tlv.noop/server"})
+    public void shouldConnectTcp4WithNoop() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -148,9 +148,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.udp4/client",
-        "${scripts}/client.connected.udp4/server"})
-    public void shouldProxyClientConnectedUdp4() throws Exception
+        "${scripts}/connected.udp4/client",
+        "${scripts}/connected.udp4/server"})
+    public void shouldConnectUdp4() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -159,9 +159,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.tcp6/client",
-        "${scripts}/client.connected.tcp6/server"})
-    public void shouldProxyClientConnectedTcp6() throws Exception
+        "${scripts}/connected.tcp6/client",
+        "${scripts}/connected.tcp6/server"})
+    public void shouldConnectTcp6() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -170,9 +170,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.udp6/client",
-        "${scripts}/client.connected.udp6/server"})
-    public void shouldProxyClientConnectedUdp6() throws Exception
+        "${scripts}/connected.udp6/client",
+        "${scripts}/connected.udp6/server"})
+    public void shouldConnectUdp6() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -181,9 +181,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.sock.stream/client",
-        "${scripts}/client.connected.sock.stream/server"})
-    public void shouldProxyClientConnectedSockStream() throws Exception
+        "${scripts}/connected.sock.stream/client",
+        "${scripts}/connected.sock.stream/server"})
+    public void shouldConnectSockStream() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -192,9 +192,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.connected.sock.datagram/client",
-        "${scripts}/client.connected.sock.datagram/server"})
-    public void shouldProxyClientConnectedSockDatagram() throws Exception
+        "${scripts}/connected.sock.datagram/client",
+        "${scripts}/connected.sock.datagram/server"})
+    public void shouldConnectSockDatagram() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -203,9 +203,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.sent.data/client",
-        "${scripts}/client.sent.data/server"})
-    public void shouldProxyClientSentData() throws Exception
+        "${scripts}/connected.unspecified.client.sent.data/client",
+        "${scripts}/connected.unspecified.client.sent.data/server"})
+    public void shouldConnectUnspecifiedClientSendsData() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -214,9 +214,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.sent.flush/client",
-        "${scripts}/client.sent.flush/server"})
-    public void shouldProxyClientSentFlush() throws Exception
+        "${scripts}/connected.unspecified.client.sent.flush/client",
+        "${scripts}/connected.unspecified.client.sent.flush/server"})
+    public void shouldConnectUnspecifiedClientSendsFlush() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -225,9 +225,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/client.sent.challenge/client",
-        "${scripts}/client.sent.challenge/server"})
-    public void shouldProxyClientSentChallenge() throws Exception
+        "${scripts}/connected.unspecified.client.sent.challenge/client",
+        "${scripts}/connected.unspecified.client.sent.challenge/server"})
+    public void shouldConnectUnspecifiedClientSendsChallenge() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -236,9 +236,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/server.sent.data/client",
-        "${scripts}/server.sent.data/server"})
-    public void shouldProxyServerSentData() throws Exception
+        "${scripts}/connected.unspecified.server.sent.data/client",
+        "${scripts}/connected.unspecified.server.sent.data/server"})
+    public void shouldConnectUnspecifiedServerSendsData() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -247,9 +247,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/server.sent.flush/client",
-        "${scripts}/server.sent.flush/server"})
-    public void shouldProxyServerSentFlush() throws Exception
+        "${scripts}/connected.unspecified.server.sent.flush/client",
+        "${scripts}/connected.unspecified.server.sent.flush/server"})
+    public void shouldConnectUnspecifiedServerSendsFlush() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -258,9 +258,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/server.sent.challenge/client",
-        "${scripts}/server.sent.challenge/server"})
-    public void shouldProxyServerSentChallenge() throws Exception
+        "${scripts}/connected.unspecified.server.sent.challenge/client",
+        "${scripts}/connected.unspecified.server.sent.challenge/server"})
+    public void shouldConnectUnspecifiedServerSendsChallenge() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
