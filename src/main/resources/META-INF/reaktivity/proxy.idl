@@ -60,6 +60,38 @@ scope proxy
         case UNIX: ProxyAddressUnix unix;
     }
 
+    enum ProxyInfoType (uint8)
+    {
+        ALPN (0x01),
+        AUTHORITY (0x02),
+        IDENTITY (0x05),
+        NAMESPACE (0x30),
+        TLS_VERSION (0x21),
+        TLS_NAME (0x22),
+        TLS_CIPHER (0x23),
+        TLS_SIGNATURE (0x24),
+        TLS_KEY (0x25)
+    }
+
+    struct ProxyIdentity
+    {
+        uint16 length;
+        octets[length] value;
+    }
+
+    union ProxyInfo switch (ProxyInfoType)
+    {
+        case ALPN: string8 alpn;
+        case AUTHORITY: string16 authority;
+        case IDENTITY: ProxyIdentity identity;  // TODO: use octets[uint16] instead
+        case NAMESPACE: string16 namespace;
+        case TLS_VERSION: string8 version;
+        case TLS_NAME: string16 name;
+        case TLS_CIPHER: string8 cipher;
+        case TLS_SIGNATURE: string8 signature;
+        case TLS_KEY: string8 key;
+    }
+
     scope control
     {
         struct ProxyRouteEx
@@ -72,6 +104,7 @@ scope proxy
         struct ProxyBeginEx extends core::stream::Extension
         {
             ProxyAddress address;
+            ProxyInfo[] infos;
         }
     }
 }

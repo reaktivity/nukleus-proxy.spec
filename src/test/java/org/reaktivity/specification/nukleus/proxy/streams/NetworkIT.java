@@ -60,6 +60,94 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/client.connected.tcp4.tlv.alpn/client",
+        "${scripts}/client.connected.tcp4.tlv.alpn/server"})
+    public void shouldProxyClientConnectedTcp4WithAlpn() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.tcp4.tlv.authority/client",
+        "${scripts}/client.connected.tcp4.tlv.authority/server"})
+    public void shouldProxyClientConnectedTcp4WithAuthority() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.tcp4.tlv.crc32c/client",
+        "${scripts}/client.connected.tcp4.tlv.crc32c/server"})
+    public void shouldProxyClientConnectedTcp4WithCrc32c() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.mismatch/client",
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.mismatch/server"})
+    public void shouldProxyClientRejectedTcp4WithCrc32cMismatch() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.overflow/client",
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.overflow/server"})
+    public void shouldProxyClientRejectedTcp4WithCrc32cOverflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.underflow/client",
+        "${scripts}/client.rejected.tcp4.tlv.crc32c.underflow/server"})
+    public void shouldProxyClientRejectedTcp4WithCrc32cUnderflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.tcp4.tlv.namespace/client",
+        "${scripts}/client.connected.tcp4.tlv.namespace/server"})
+    public void shouldProxyClientConnectedTcp4WithNamespace() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/client.connected.tcp4.tlv.noop/client",
+        "${scripts}/client.connected.tcp4.tlv.noop/server"})
+    public void shouldProxyClientConnectedTcp4WithNoop() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/client.connected.udp4/client",
         "${scripts}/client.connected.udp4/server"})
     public void shouldProxyClientConnectedUdp4() throws Exception
