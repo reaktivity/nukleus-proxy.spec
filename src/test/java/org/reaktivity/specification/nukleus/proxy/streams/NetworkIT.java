@@ -181,6 +181,39 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.tlv.ssl/client",
+        "${scripts}/connected.tcp4.tlv.ssl/server"})
+    public void shouldConnectTcp4WithSsl() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.tlv.ssl.client.cert/client",
+        "${scripts}/connected.tcp4.tlv.ssl.client.cert/server"})
+    public void shouldConnectTcp4WithSslClientCertificate() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.tlv.ssl.client.cert.session/client",
+        "${scripts}/connected.tcp4.tlv.ssl.client.cert.session/server"})
+    public void shouldConnectTcp4WithSslClientCertificateSession() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.udp4/client",
         "${scripts}/connected.udp4/server"})
     public void shouldConnectUdp4() throws Exception
