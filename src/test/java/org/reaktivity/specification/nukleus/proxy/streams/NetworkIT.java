@@ -38,9 +38,75 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.unspecified/client",
-        "${scripts}/connected.unspecified/server"})
-    public void shouldConnectUnspecified() throws Exception
+        "${scripts}/connected.local/client",
+        "${scripts}/connected.local/server"})
+    public void shouldConnectLocal() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.client.sent.data/client",
+        "${scripts}/connected.local.client.sent.data/server"})
+    public void shouldConnectLocalClientSendsData() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.client.sent.flush/client",
+        "${scripts}/connected.local.client.sent.flush/server"})
+    public void shouldConnectLocalClientSendsFlush() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.client.sent.challenge/client",
+        "${scripts}/connected.local.client.sent.challenge/server"})
+    public void shouldConnectLocalClientSendsChallenge() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.data/client",
+        "${scripts}/connected.local.server.sent.data/server"})
+    public void shouldConnectLocalServerSendsData() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.flush/client",
+        "${scripts}/connected.local.server.sent.flush/server"})
+    public void shouldConnectLocalServerSendsFlush() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.challenge/client",
+        "${scripts}/connected.local.server.sent.challenge/server"})
+    public void shouldConnectLocalServerSendsChallenge() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -85,39 +151,6 @@ public class NetworkIT
         "${scripts}/connected.tcp4.tlv.crc32c/client",
         "${scripts}/connected.tcp4.tlv.crc32c/server"})
     public void shouldConnectTcp4WithCrc32c() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/server"})
-    public void shouldRejectTcp4WithCrc32cMismatch() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/server"})
-    public void shouldRejectTcp4WithCrc32cOverflow() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/server"})
-    public void shouldRejectTcp4WithCrc32cUnderflow() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -203,9 +236,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.unspecified.client.sent.data/client",
-        "${scripts}/connected.unspecified.client.sent.data/server"})
-    public void shouldConnectUnspecifiedClientSendsData() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/server"})
+    public void shouldRejectTcp4WithCrc32cMismatch() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -214,9 +247,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.unspecified.client.sent.flush/client",
-        "${scripts}/connected.unspecified.client.sent.flush/server"})
-    public void shouldConnectUnspecifiedClientSendsFlush() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/server"})
+    public void shouldRejectTcp4WithCrc32cOverflow() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -225,42 +258,9 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.unspecified.client.sent.challenge/client",
-        "${scripts}/connected.unspecified.client.sent.challenge/server"})
-    public void shouldConnectUnspecifiedClientSendsChallenge() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/connected.unspecified.server.sent.data/client",
-        "${scripts}/connected.unspecified.server.sent.data/server"})
-    public void shouldConnectUnspecifiedServerSendsData() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/connected.unspecified.server.sent.flush/client",
-        "${scripts}/connected.unspecified.server.sent.flush/server"})
-    public void shouldConnectUnspecifiedServerSendsFlush() throws Exception
-    {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
-        k3po.finish();
-    }
-
-    @Test
-    @Specification({
-        "${scripts}/connected.unspecified.server.sent.challenge/client",
-        "${scripts}/connected.unspecified.server.sent.challenge/server"})
-    public void shouldConnectUnspecifiedServerSendsChallenge() throws Exception
+        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/client",
+        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/server"})
+    public void shouldRejectTcp4WithCrc32cUnderflow() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
