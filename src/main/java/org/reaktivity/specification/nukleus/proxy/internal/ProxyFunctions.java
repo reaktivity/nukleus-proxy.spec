@@ -23,6 +23,8 @@ import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInf
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.NAMESPACE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.SECURE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.CIPHER;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.KEY;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.NAME;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.PROTOCOL;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.SIGNATURE;
 
@@ -370,6 +372,20 @@ public final class ProxyFunctions
                     String signature)
                 {
                     infosRW.item(i -> i.secure(s -> s.signature(signature)));
+                    return this;
+                }
+
+                public ProxySecureInfoBuilder name(
+                    String name)
+                {
+                    infosRW.item(i -> i.secure(s -> s.name(name)));
+                    return this;
+                }
+
+                public ProxySecureInfoBuilder key(
+                    String key)
+                {
+                    infosRW.item(i -> i.secure(s -> s.key(key)));
                     return this;
                 }
 
@@ -845,6 +861,22 @@ public final class ProxyFunctions
                 {
                     final String8FW signature8 = new String8FW(signature);
                     matchers.put(SIGNATURE, info -> signature8.equals(info.signature()));
+                    return this;
+                }
+
+                public ProxySecureInfoMatcherBuilder name(
+                    String name)
+                {
+                    final String16FW name16 = new String16FW(name);
+                    matchers.put(NAME, info -> name16.equals(info.name()));
+                    return this;
+                }
+
+                public ProxySecureInfoMatcherBuilder key(
+                    String key)
+                {
+                    final String8FW key8 = new String8FW(key);
+                    matchers.put(KEY, info -> key8.equals(info.key()));
                     return this;
                 }
 
