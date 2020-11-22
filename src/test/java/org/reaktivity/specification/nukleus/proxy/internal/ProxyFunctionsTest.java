@@ -26,6 +26,7 @@ import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAdd
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol.STREAM;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.AUTHORITY;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.IDENTITY;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.NAMESPACE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.SECURE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.CIPHER;
@@ -88,6 +89,7 @@ public class ProxyFunctionsTest
                                      .info()
                                          .alpn("echo")
                                          .authority("example.com")
+                                         .identity(fromHex("12345678"))
                                          .namespace("example")
                                          .secure()
                                              .protocol("TLSv1.3")
@@ -125,30 +127,34 @@ public class ProxyFunctionsTest
                 assertEquals("example.com", info.authority().asString());
                 break;
             case 2:
+                assertEquals(IDENTITY, info.kind());
+                assertEquals(new UnsafeBuffer(fromHex("12345678")), info.identity().value().value());
+                break;
+            case 3:
                 assertEquals(NAMESPACE, info.kind());
                 assertEquals("example", info.namespace().asString());
                 break;
-            case 3:
+            case 4:
                 assertEquals(SECURE, info.kind());
                 assertEquals(PROTOCOL, info.secure().kind());
                 assertEquals("TLSv1.3", info.secure().protocol().asString());
                 break;
-            case 4:
+            case 5:
                 assertEquals(SECURE, info.kind());
                 assertEquals(CIPHER, info.secure().kind());
                 assertEquals("ECDHE-RSA-AES128-GCM-SHA256", info.secure().cipher().asString());
                 break;
-            case 5:
+            case 6:
                 assertEquals(SECURE, info.kind());
                 assertEquals(SIGNATURE, info.secure().kind());
                 assertEquals("SHA256", info.secure().signature().asString());
                 break;
-            case 6:
+            case 7:
                 assertEquals(SECURE, info.kind());
                 assertEquals(NAME, info.secure().kind());
                 assertEquals("name@domain", info.secure().name().asString());
                 break;
-            case 7:
+            case 8:
                 assertEquals(SECURE, info.kind());
                 assertEquals(KEY, info.secure().kind());
                 assertEquals("RSA2048", info.secure().key().asString());
@@ -172,6 +178,7 @@ public class ProxyFunctionsTest
                                              .info()
                                                  .alpn("echo")
                                                  .authority("example.com")
+                                                 .identity(fromHex("12345678"))
                                                  .namespace("example")
                                                  .secure()
                                                      .protocol("TLSv1.3")
@@ -194,6 +201,7 @@ public class ProxyFunctionsTest
                                        .destinationPort(443)))
             .infosItem(i -> i.alpn("echo"))
             .infosItem(i -> i.authority("example.com"))
+            .infosItem(i -> i.identity(id -> id.value(v -> v.set(fromHex("12345678")))))
             .infosItem(i -> i.namespace("example"))
             .infosItem(i -> i.secure(s -> s.protocol("TLSv1.3")))
             .infosItem(i -> i.secure(s -> s.cipher("ECDHE-RSA-AES128-GCM-SHA256")))
@@ -463,6 +471,31 @@ public class ProxyFunctionsTest
                                        .sourcePort(32768)
                                        .destinationPort(443)))
             .infosItem(i -> i.authority("example.com"))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionIdentity() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .identity(fromHex("12345679"))
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.identity(id -> id.value(v -> v.set(fromHex("12345678")))))
             .build();
 
         assertNull(matcher.match(byteBuf));

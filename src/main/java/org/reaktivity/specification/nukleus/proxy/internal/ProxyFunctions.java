@@ -20,6 +20,7 @@ import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAdd
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.AUTHORITY;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.IDENTITY;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.NAMESPACE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.SECURE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.CIPHER;
@@ -327,6 +328,13 @@ public final class ProxyFunctions
                 String authority)
             {
                 infosRW.item(i -> i.authority(authority));
+                return this;
+            }
+
+            public ProxyInfoBuilder identity(
+                byte[] identity)
+            {
+                infosRW.item(i -> i.identity(id -> id.value(v -> v.set(identity))));
                 return this;
             }
 
@@ -793,6 +801,14 @@ public final class ProxyFunctions
             {
                 final String16FW authority16 = new String16FW(authority);
                 matchers.put(AUTHORITY, info -> authority16.equals(info.authority()));
+                return this;
+            }
+
+            public ProxyInfoMatcherBuilder identity(
+                byte[] identity)
+            {
+                final DirectBuffer identityBuf = new UnsafeBuffer(identity);
+                matchers.put(IDENTITY, info -> identityBuf.equals(info.identity().value().value()));
                 return this;
             }
 

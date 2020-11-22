@@ -148,6 +148,17 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.identity/client",
+        "${scripts}/connected.tcp4.identity/server"})
+    public void shouldConnectTcp4WithIdentity() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.tcp4.namespace/client",
         "${scripts}/connected.tcp4.namespace/server"})
     public void shouldConnectTcp4WithNamespace() throws Exception
