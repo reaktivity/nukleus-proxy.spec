@@ -126,8 +126,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.alpn/client",
-        "${scripts}/connected.tcp4.tlv.alpn/server"})
+        "${scripts}/connected.tcp4.alpn/client",
+        "${scripts}/connected.tcp4.alpn/server"})
     public void shouldConnectTcp4WithAlpn() throws Exception
     {
         k3po.start();
@@ -137,8 +137,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.authority/client",
-        "${scripts}/connected.tcp4.tlv.authority/server"})
+        "${scripts}/connected.tcp4.authority/client",
+        "${scripts}/connected.tcp4.authority/server"})
     public void shouldConnectTcp4WithAuthority() throws Exception
     {
         k3po.start();
@@ -148,8 +148,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.crc32c/client",
-        "${scripts}/connected.tcp4.tlv.crc32c/server"})
+        "${scripts}/connected.tcp4.crc32c/client",
+        "${scripts}/connected.tcp4.crc32c/server"})
     public void shouldConnectTcp4WithCrc32c() throws Exception
     {
         k3po.start();
@@ -159,8 +159,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.namespace/client",
-        "${scripts}/connected.tcp4.tlv.namespace/server"})
+        "${scripts}/connected.tcp4.namespace/client",
+        "${scripts}/connected.tcp4.namespace/server"})
     public void shouldConnectTcp4WithNamespace() throws Exception
     {
         k3po.start();
@@ -170,8 +170,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.noop/client",
-        "${scripts}/connected.tcp4.tlv.noop/server"})
+        "${scripts}/connected.tcp4.noop/client",
+        "${scripts}/connected.tcp4.noop/server"})
     public void shouldConnectTcp4WithNoop() throws Exception
     {
         k3po.start();
@@ -181,8 +181,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.ssl/client",
-        "${scripts}/connected.tcp4.tlv.ssl/server"})
+        "${scripts}/connected.tcp4.ssl/client",
+        "${scripts}/connected.tcp4.ssl/server"})
     public void shouldConnectTcp4WithSsl() throws Exception
     {
         k3po.start();
@@ -192,8 +192,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.ssl.client.cert/client",
-        "${scripts}/connected.tcp4.tlv.ssl.client.cert/server"})
+        "${scripts}/connected.tcp4.ssl.client.cert/client",
+        "${scripts}/connected.tcp4.ssl.client.cert/server"})
     public void shouldConnectTcp4WithSslClientCertificate() throws Exception
     {
         k3po.start();
@@ -203,8 +203,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.tlv.ssl.client.cert.session/client",
-        "${scripts}/connected.tcp4.tlv.ssl.client.cert.session/server"})
+        "${scripts}/connected.tcp4.ssl.client.cert.session/client",
+        "${scripts}/connected.tcp4.ssl.client.cert.session/server"})
     public void shouldConnectTcp4WithSslClientCertificateSession() throws Exception
     {
         k3po.start();
@@ -269,8 +269,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.mismatch/server"})
+        "${scripts}/rejected.tcp4.crc32c.mismatch/client",
+        "${scripts}/rejected.tcp4.crc32c.mismatch/server"})
     public void shouldRejectTcp4WithCrc32cMismatch() throws Exception
     {
         k3po.start();
@@ -280,8 +280,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.overflow/server"})
+        "${scripts}/rejected.tcp4.crc32c.overflow/client",
+        "${scripts}/rejected.tcp4.crc32c.overflow/server"})
     public void shouldRejectTcp4WithCrc32cOverflow() throws Exception
     {
         k3po.start();
@@ -291,8 +291,8 @@ public class NetworkIT
 
     @Test
     @Specification({
-        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/client",
-        "${scripts}/rejected.tcp4.tlv.crc32c.underflow/server"})
+        "${scripts}/rejected.tcp4.crc32c.underflow/client",
+        "${scripts}/rejected.tcp4.crc32c.underflow/server"})
     public void shouldRejectTcp4WithCrc32cUnderflow() throws Exception
     {
         k3po.start();

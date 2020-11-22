@@ -126,6 +126,50 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.alpn/client",
+        "${scripts}/connected.tcp4.alpn/server"})
+    public void shouldConnectTcp4WithAlpn() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.authority/client",
+        "${scripts}/connected.tcp4.authority/server"})
+    public void shouldConnectTcp4WithAuthority() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.namespace/client",
+        "${scripts}/connected.tcp4.namespace/server"})
+    public void shouldConnectTcp4WithNamespace() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.ssl/client",
+        "${scripts}/connected.tcp4.ssl/server"})
+    public void shouldConnectTcp4WithSsl() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.udp4/client",
         "${scripts}/connected.udp4/server"})
     public void shouldConnectUdp4() throws Exception

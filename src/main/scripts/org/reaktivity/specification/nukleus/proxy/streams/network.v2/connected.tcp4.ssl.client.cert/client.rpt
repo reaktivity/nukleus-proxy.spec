@@ -30,9 +30,9 @@ write [0x21]                                            # version = 2, command =
       [0x80 0x00]                                       # source port = 32768
       [0x01 0xbb]                                       # destination port = 443
       [0x20 0x00 0x4e]                                  # ssl
-      [0x05]                                            # version, client certificate (session only)
+      [0x07]                                            # version, client certificate (connection)
       0                                                 # verified
-      [0x21 0x00 0x07] "TLSv1.2"                        # version
+      [0x21 0x00 0x07] "TLSv1.3"                        # version
       [0x23 0x00 0x1b] "ECDHE-RSA-AES128-GCM-SHA256"    # cipher
       [0x24 0x00 0x06] "SHA256"                         # signature
       [0x22 0x00 0x0b] "name@domain"                    # common name

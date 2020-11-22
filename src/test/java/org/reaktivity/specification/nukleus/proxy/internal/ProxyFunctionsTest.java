@@ -24,6 +24,13 @@ import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAdd
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol.STREAM;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.AUTHORITY;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.NAMESPACE;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.SECURE;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.CIPHER;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.PROTOCOL;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.SIGNATURE;
 
 import java.lang.reflect.Method;
 import java.net.UnknownHostException;
@@ -37,6 +44,7 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.Test;
 import org.kaazing.k3po.lang.el.BytesMatcher;
 import org.kaazing.k3po.lang.internal.el.ExpressionContext;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.control.ProxyRouteExFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.stream.ProxyBeginExFW;
 
@@ -75,6 +83,16 @@ public class ProxyFunctionsTest
                                          .sourcePort(32768)
                                          .destinationPort(443)
                                          .build()
+                                     .info()
+                                         .alpn("echo")
+                                         .authority("example.com")
+                                         .namespace("example")
+                                         .secure()
+                                             .protocol("TLSv1.3")
+                                             .cipher("ECDHE-RSA-AES128-GCM-SHA256")
+                                             .signature("SHA256")
+                                             .build()
+                                         .build()
                                      .build();
         DirectBuffer buffer = new UnsafeBuffer(build);
         ProxyBeginExFW beginEx = new ProxyBeginExFW().wrap(buffer, 0, buffer.capacity());
@@ -86,6 +104,44 @@ public class ProxyFunctionsTest
         assertEquals(new UnsafeBuffer(fromHex("c0a800fe")), beginEx.address().inet().destination().value());
         assertEquals(32768, beginEx.address().inet().sourcePort());
         assertEquals(443, beginEx.address().inet().destinationPort());
+
+        ProxyInfoFW info = new ProxyInfoFW();
+        final DirectBuffer infos = beginEx.infos().items();
+        for (int index = 0, offset = 0; offset < infos.capacity(); index++)
+        {
+            info.wrap(infos, offset, infos.capacity());
+            switch (index)
+            {
+            case 0:
+                assertEquals(ALPN, info.kind());
+                assertEquals("echo", info.alpn().asString());
+                break;
+            case 1:
+                assertEquals(AUTHORITY, info.kind());
+                assertEquals("example.com", info.authority().asString());
+                break;
+            case 2:
+                assertEquals(NAMESPACE, info.kind());
+                assertEquals("example", info.namespace().asString());
+                break;
+            case 3:
+                assertEquals(SECURE, info.kind());
+                assertEquals(PROTOCOL, info.secure().kind());
+                assertEquals("TLSv1.3", info.secure().protocol().asString());
+                break;
+            case 4:
+                assertEquals(SECURE, info.kind());
+                assertEquals(CIPHER, info.secure().kind());
+                assertEquals("ECDHE-RSA-AES128-GCM-SHA256", info.secure().cipher().asString());
+                break;
+            case 5:
+                assertEquals(SECURE, info.kind());
+                assertEquals(SIGNATURE, info.secure().kind());
+                assertEquals("SHA256", info.secure().signature().asString());
+                break;
+            }
+            offset = info.limit();
+        }
     }
 
     @Test
@@ -99,6 +155,16 @@ public class ProxyFunctionsTest
                                                  .sourcePort(32768)
                                                  .destinationPort(443)
                                                  .build()
+                                             .info()
+                                                 .alpn("echo")
+                                                 .authority("example.com")
+                                                 .namespace("example")
+                                                 .secure()
+                                                     .protocol("TLSv1.3")
+                                                     .cipher("ECDHE-RSA-AES128-GCM-SHA256")
+                                                     .signature("SHA256")
+                                                     .build()
+                                                 .build()
                                              .build();
 
         ByteBuffer byteBuf = ByteBuffer.allocate(1024);
@@ -110,6 +176,12 @@ public class ProxyFunctionsTest
                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
                                        .sourcePort(32768)
                                        .destinationPort(443)))
+            .infosItem(i -> i.alpn("echo"))
+            .infosItem(i -> i.authority("example.com"))
+            .infosItem(i -> i.namespace("example"))
+            .infosItem(i -> i.secure(s -> s.protocol("TLSv1.3")))
+            .infosItem(i -> i.secure(s -> s.cipher("ECDHE-RSA-AES128-GCM-SHA256")))
+            .infosItem(i -> i.secure(s -> s.signature("SHA256")))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
@@ -323,6 +395,162 @@ public class ProxyFunctionsTest
                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
                                        .sourcePort(32768)
                                        .destinationPort(443)))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionAlpn() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .alpn("dot")
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.alpn("echo"))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionAuthority() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .authority("example.net")
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.authority("example.com"))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionNamespace() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .namespace("exemplar")
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.namespace("example"))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionSecureProtocol() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .secure()
+                                                     .protocol("TLSv1.2")
+                                                     .build()
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.secure(s -> s.protocol("TLSv1.3")))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionSecureCipher() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .secure()
+                                                     .cipher("ECDHE-RSA-AES128-GCM-SHA257")
+                                                     .build()
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.secure(s -> s.cipher("ECDHE-RSA-AES128-GCM-SHA256")))
+            .build();
+
+        assertNull(matcher.match(byteBuf));
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldNotMatchInetBeginExtensionSecureSignature() throws Exception
+    {
+        BytesMatcher matcher = ProxyFunctions.matchBeginEx()
+                                             .typeId(0x01)
+                                             .info()
+                                                 .secure()
+                                                     .signature("SHA257")
+                                                     .build()
+                                                 .build()
+                                             .build();
+
+        ByteBuffer byteBuf = ByteBuffer.allocate(1024);
+
+        new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
+            .typeId(0x01)
+            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
+                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                       .sourcePort(32768)
+                                       .destinationPort(443)))
+            .infosItem(i -> i.secure(s -> s.signature("SHA256")))
             .build();
 
         assertNull(matcher.match(byteBuf));

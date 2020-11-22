@@ -18,24 +18,41 @@ package org.reaktivity.specification.nukleus.proxy.internal;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.AUTHORITY;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.NAMESPACE;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.SECURE;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.CIPHER;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.PROTOCOL;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType.SIGNATURE;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
+import org.agrona.collections.MutableBoolean;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.kaazing.k3po.lang.el.BytesMatcher;
 import org.kaazing.k3po.lang.el.Function;
 import org.kaazing.k3po.lang.el.spi.FunctionMapperSpi;
+import org.reaktivity.specification.nukleus.proxy.internal.types.Array32FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.OctetsFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInet6FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressUnixFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxySecureInfoType;
+import org.reaktivity.specification.nukleus.proxy.internal.types.String16FW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.String8FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.control.ProxyRouteExFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.stream.ProxyBeginExFW;
 
@@ -108,6 +125,11 @@ public final class ProxyFunctions
         public ProxyAddressUnixBuilder addressUnix()
         {
             return new ProxyAddressUnixBuilder();
+        }
+
+        public ProxyInfoBuilder info()
+        {
+            return new ProxyInfoBuilder();
         }
 
         public byte[] build()
@@ -280,6 +302,83 @@ public final class ProxyFunctions
                 return ProxyBeginExBuilder.this;
             }
         }
+
+        public final class ProxyInfoBuilder
+        {
+            private final Array32FW.Builder<ProxyInfoFW.Builder, ProxyInfoFW> infosRW =
+                    new Array32FW.Builder<>(new ProxyInfoFW.Builder(), new ProxyInfoFW());
+
+            private ProxyInfoBuilder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[1024]);
+                infosRW.wrap(buffer, 0, buffer.capacity());
+            }
+
+            public ProxyInfoBuilder alpn(
+                String alpn)
+            {
+                infosRW.item(i -> i.alpn(alpn));
+                return this;
+            }
+
+            public ProxyInfoBuilder authority(
+                String authority)
+            {
+                infosRW.item(i -> i.authority(authority));
+                return this;
+            }
+
+            public ProxyInfoBuilder namespace(
+                String namespace)
+            {
+                infosRW.item(i -> i.namespace(namespace));
+                return this;
+            }
+
+            public ProxySecureInfoBuilder secure()
+            {
+                return new ProxySecureInfoBuilder();
+            }
+
+            public ProxyBeginExBuilder build()
+            {
+                beginExRW.infos(infosRW.build());
+                return ProxyBeginExBuilder.this;
+            }
+
+            public final class ProxySecureInfoBuilder
+            {
+                private ProxySecureInfoBuilder()
+                {
+                }
+
+                public ProxySecureInfoBuilder protocol(
+                    String protocol)
+                {
+                    infosRW.item(i -> i.secure(s -> s.protocol(protocol)));
+                    return this;
+                }
+
+                public ProxySecureInfoBuilder cipher(
+                    String cipher)
+                {
+                    infosRW.item(i -> i.secure(s -> s.cipher(cipher)));
+                    return this;
+                }
+
+                public ProxySecureInfoBuilder signature(
+                    String signature)
+                {
+                    infosRW.item(i -> i.secure(s -> s.signature(signature)));
+                    return this;
+                }
+
+                public ProxyInfoBuilder build()
+                {
+                    return ProxyInfoBuilder.this;
+                }
+            }
+        }
     }
 
     public static final class ProxyBeginExMatcherBuilder
@@ -290,6 +389,7 @@ public final class ProxyFunctions
 
         private Integer typeId;
         private Predicate<ProxyAddressFW> address;
+        private Predicate<Array32FW<ProxyInfoFW>> infos;
 
         public ProxyBeginExMatcherBuilder typeId(
             int typeId)
@@ -322,6 +422,14 @@ public final class ProxyFunctions
             return matcher;
         }
 
+        public ProxyInfoMatcherBuilder info()
+        {
+            final ProxyInfoMatcherBuilder matcher = new ProxyInfoMatcherBuilder();
+
+            this.infos = matcher::match;
+            return matcher;
+        }
+
         public BytesMatcher build()
         {
             return typeId != null ? this::match : buf -> null;
@@ -340,7 +448,8 @@ public final class ProxyFunctions
 
             if (beginEx != null &&
                 matchTypeId(beginEx) &&
-                matchAddress(beginEx))
+                matchAddress(beginEx) &&
+                matchInfos(beginEx))
             {
                 byteBuf.position(byteBuf.position() + beginEx.sizeof());
                 return beginEx;
@@ -359,6 +468,12 @@ public final class ProxyFunctions
             ProxyBeginExFW beginEx)
         {
             return address == null || address.test(beginEx.address());
+        }
+
+        private boolean matchInfos(
+            ProxyBeginExFW beginEx)
+        {
+            return infos == null || infos.test(beginEx.infos());
         }
 
         public final class ProxyAddressInetMatcherBuilder
@@ -637,6 +752,113 @@ public final class ProxyFunctions
                 final ProxyAddressUnixFW unix)
             {
                 return destination == null || destination.equals(unix.destination().value());
+            }
+        }
+
+        public final class ProxyInfoMatcherBuilder
+        {
+            private final Map<ProxyInfoType, Predicate<ProxyInfoFW>> matchers;
+
+            private ProxyInfoMatcherBuilder()
+            {
+                matchers = new EnumMap<>(ProxyInfoType.class);
+            }
+
+            public ProxyInfoMatcherBuilder alpn(
+                String alpn)
+            {
+                final String8FW alpn8 = new String8FW(alpn);
+                matchers.put(ALPN, info -> alpn8.equals(info.alpn()));
+                return this;
+            }
+
+            public ProxyInfoMatcherBuilder authority(
+                String authority)
+            {
+                final String16FW authority16 = new String16FW(authority);
+                matchers.put(AUTHORITY, info -> authority16.equals(info.authority()));
+                return this;
+            }
+
+            public ProxyInfoMatcherBuilder namespace(
+                String namespace)
+            {
+                final String16FW namespace16 = new String16FW(namespace);
+                matchers.put(NAMESPACE, info -> namespace16.equals(info.namespace()));
+                return this;
+            }
+
+            public ProxySecureInfoMatcherBuilder secure()
+            {
+                final ProxySecureInfoMatcherBuilder matcher = new ProxySecureInfoMatcherBuilder();
+                matchers.put(SECURE, info -> matcher.match(info.secure()));
+                return matcher;
+            }
+
+            public ProxyBeginExMatcherBuilder build()
+            {
+                return ProxyBeginExMatcherBuilder.this;
+            }
+
+            private boolean match(
+                Array32FW<ProxyInfoFW> infos)
+            {
+                MutableBoolean match = new MutableBoolean(true);
+                infos.forEach(info -> match.value &= match(info));
+                return match.value;
+            }
+
+            private boolean match(
+                ProxyInfoFW info)
+            {
+                final Predicate<ProxyInfoFW> matcher = matchers.get(info.kind());
+                return matcher == null || matcher.test(info);
+            }
+
+            public final class ProxySecureInfoMatcherBuilder
+            {
+                private final Map<ProxySecureInfoType, Predicate<ProxySecureInfoFW>> matchers;
+
+                private ProxySecureInfoMatcherBuilder()
+                {
+                    matchers = new EnumMap<>(ProxySecureInfoType.class);
+                }
+
+                public ProxySecureInfoMatcherBuilder protocol(
+                    String protocol)
+                {
+                    final String8FW protocol8 = new String8FW(protocol);
+                    matchers.put(PROTOCOL, info -> protocol8.equals(info.protocol()));
+                    return this;
+                }
+
+                public ProxySecureInfoMatcherBuilder cipher(
+                    String cipher)
+                {
+                    final String8FW cipher8 = new String8FW(cipher);
+                    matchers.put(CIPHER, info -> cipher8.equals(info.cipher()));
+                    return this;
+                }
+
+                public ProxySecureInfoMatcherBuilder signature(
+                    String signature)
+                {
+                    final String8FW signature8 = new String8FW(signature);
+                    matchers.put(SIGNATURE, info -> signature8.equals(info.signature()));
+                    return this;
+                }
+
+                public ProxyInfoMatcherBuilder build()
+                {
+                    return ProxyInfoMatcherBuilder.this;
+                }
+
+                private boolean match(
+                    ProxySecureInfoFW secureInfo)
+                {
+                    final Predicate<ProxySecureInfoFW> matcher = matchers.get(secureInfo.kind());
+                    return matcher == null || matcher.test(secureInfo);
+                }
             }
         }
     }
