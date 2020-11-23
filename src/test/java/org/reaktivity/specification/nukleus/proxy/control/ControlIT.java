@@ -57,6 +57,16 @@ public class ControlIT
 
     @Test
     @Specification({
+        "route/client/nukleus",
+        "route/client/controller"
+    })
+    public void shouldRouteClient() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "unroute/server/nukleus",
         "unroute/server/controller"
     })
@@ -64,6 +74,18 @@ public class ControlIT
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "unroute/client/nukleus",
+        "unroute/client/controller"
+    })
+    public void shouldUnrouteClient() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 }
