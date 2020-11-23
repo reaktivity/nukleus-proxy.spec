@@ -102,10 +102,68 @@ scope proxy
         case SECURE: ProxySecureInfo secure;
     }
 
+    struct ProxyAddressRangeInet
+    {
+        octets[4] prefix;
+        uint8 length;
+    }
+
+    struct ProxyAddressRangeInet6
+    {
+        octets[16] prefix;
+        uint8 length;
+    }
+
+    struct ProxyAddressRangeUnix
+    {
+        octets[108] prefix;
+        uint8 length;
+    }
+
+    struct ProxyPortRange
+    {
+        uint16 low;
+        uint16 high;
+    }
+
+    struct ProxyAddressMatchInet
+    {
+        ProxyAddressProtocol protocol;
+        ProxyAddressRangeInet source;
+        ProxyAddressRangeInet destination;
+        ProxyPortRange sourcePort;
+        ProxyPortRange destinationPort;
+    }
+
+    struct ProxyAddressMatchInet6
+    {
+        ProxyAddressProtocol protocol;
+        ProxyAddressRangeInet6 source;
+        ProxyAddressRangeInet6 destination;
+        ProxyPortRange sourcePort;
+        ProxyPortRange destinationPort;
+    }
+
+    struct ProxyAddressMatchUnix
+    {
+        ProxyAddressProtocol protocol;
+        ProxyAddressRangeUnix source;
+        ProxyAddressRangeUnix destination;
+    }
+
+    union ProxyAddressMatch switch (ProxyAddressFamily)
+    {
+        case INET: ProxyAddressMatchInet inet;
+        case INET6: ProxyAddressMatchInet6 inet6;
+        case UNIX: ProxyAddressMatchUnix unix;
+    }
+
     scope control
     {
         struct ProxyRouteEx
         {
+            ProxyAddressMatch address;
+            ProxyInfo[] infos;
         }
     }
 

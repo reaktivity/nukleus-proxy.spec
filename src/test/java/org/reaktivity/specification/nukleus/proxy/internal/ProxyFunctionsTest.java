@@ -65,13 +65,30 @@ public class ProxyFunctionsTest
     }
 
     @Test
-    public void shouldGenerateRouteExtension()
+    public void shouldGenerateInetRouteExtension() throws UnknownHostException
     {
         byte[] build = ProxyFunctions.routeEx()
+                                     .addressInet()
+                                         .protocol("stream")
+                                         .source("192.168.0.1")
+                                         .destination("192.168.1.1")
+                                         .sourcePort(32768)
+                                         .destinationPort(443)
+                                         .build()
                                      .build();
         DirectBuffer buffer = new UnsafeBuffer(build);
         ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
         assertNotNull(routeEx);
+        assertEquals(INET, routeEx.address().kind());
+        assertEquals(STREAM, routeEx.address().inet().protocol().get());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), routeEx.address().inet().source().prefix().value());
+        assertEquals(32, routeEx.address().inet().source().length());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80101")), routeEx.address().inet().destination().prefix().value());
+        assertEquals(32, routeEx.address().inet().destination().length());
+        assertEquals(32768, routeEx.address().inet().sourcePort().low());
+        assertEquals(32768, routeEx.address().inet().sourcePort().high());
+        assertEquals(443, routeEx.address().inet().destinationPort().low());
+        assertEquals(443, routeEx.address().inet().destinationPort().high());
     }
 
     @Test
