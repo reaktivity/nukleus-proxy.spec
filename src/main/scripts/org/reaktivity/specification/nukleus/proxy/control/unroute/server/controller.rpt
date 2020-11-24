@@ -14,7 +14,7 @@
 # under the License.
 #
 
-property newServerRouteId ${nukleus:newServerRouteId("echo#0", "target#0")} # external
+property newServerRouteId ${nukleus:newServerRouteId("net#0", "app#0")} # external
 
 property nukleiUR020001C ${nuklei:directory("target/nukleus-itests").controlCapacity(1024, 1024)}
 

@@ -15,7 +15,7 @@
 #
 
 connect await ROUTED_SERVER
-        "nukleus://streams/proxy#0"
+        "nukleus://streams/app#0"
     option nukleus:window 8192
     option nukleus:transmission "duplex"
 connected

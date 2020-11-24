@@ -31,8 +31,8 @@ write ${controlRG010001C.nextCorrelationId()}
 write ${core:string("proxy")}
 write [0x00]
 write ${routeAuthorization}
-write ${core:string("proxy#0")}
-write ${core:string("target#0")}
+write ${core:string("net#0")}
+write ${core:string("app#0")}
 write flush
 
 read 0x40000001

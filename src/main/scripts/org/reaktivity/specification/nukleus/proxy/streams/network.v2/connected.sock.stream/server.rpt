@@ -14,20 +14,17 @@
 # under the License.
 #
 
-property serverAddress "nukleus://streams/proxy#0"
-
-accept ${serverAddress}
+accept "nukleus://streams/net#0"
        option nukleus:window 8192
-       option nukleus:transmission "duplex"
+       option nukleus:transmission "half-duplex"
 accepted
 
 connected
 
-read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"
-
-read [0x21]                                         # version = 2, command = proxy
+read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
+     [0x21]                                         # version = 2, command = proxy
      [0x31]                                         # protocol = sock_stream
-     [0xd8]                                         # length
+     [0x00 0xd8]                                    # length
      "source-123456789"                             # source address
      [0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00]
      [0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00]
