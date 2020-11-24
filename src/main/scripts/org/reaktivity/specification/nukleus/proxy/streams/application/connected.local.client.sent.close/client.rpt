@@ -14,22 +14,10 @@
 # under the License.
 #
 
-accept "nukleus://streams/net#0"
-       option nukleus:window 8192
-       option nukleus:transmission "half-duplex"
-accepted
-
+connect await ROUTED_SERVER
+        "nukleus://streams/app#0"
+    option nukleus:window 8192
+    option nukleus:transmission "duplex"
 connected
 
-read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
-     [0x20]                                         # version = 2, command = local
-     [0x00]                                         # protocol = unspecified
-     [0x00 0x00]                                    # length
-
-write flush
-
-# TODO remove
-write "opened"
-write flush
-
-write advised nukleus:challenge
+write close

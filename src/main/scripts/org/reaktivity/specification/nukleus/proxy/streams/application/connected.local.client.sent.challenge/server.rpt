@@ -21,4 +21,7 @@ accepted
 
 connected
 
+# TODO remove
+write "opened"
+
 write advised nukleus:challenge

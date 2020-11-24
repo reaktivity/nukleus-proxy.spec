@@ -73,7 +73,18 @@ public class ApplicationIT
     @Specification({
         "${scripts}/connected.local.client.sent.challenge/client",
         "${scripts}/connected.local.client.sent.challenge/server"})
-    public void shouldConnectLocalClientSendshallenge() throws Exception
+    public void shouldConnectLocalClientSendsChallenge() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.client.sent.close/client",
+        "${scripts}/connected.local.client.sent.close/server"})
+    public void shouldConnectLocalClientSendsClose() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
@@ -107,6 +118,17 @@ public class ApplicationIT
         "${scripts}/connected.local.server.sent.challenge/client",
         "${scripts}/connected.local.server.sent.challenge/server"})
     public void shouldConnectLocalServerSendsChallenge() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.close/client",
+        "${scripts}/connected.local.server.sent.close/server"})
+    public void shouldConnectLocalServerSendsClose() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
