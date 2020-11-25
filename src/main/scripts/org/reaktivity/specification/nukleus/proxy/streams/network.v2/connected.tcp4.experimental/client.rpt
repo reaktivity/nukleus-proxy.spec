@@ -21,8 +21,12 @@ connect await ROUTED_SERVER
 connected
 
 write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
-      [0x20]                                        # version = 2, command = local
-      [0x00]                                        # protocol = unspecified
-      [0x00 0x07]                                   # length
-      "ignored"
+      [0x21]                                        # version = 2, command = proxy
+      [0x11]                                        # protocol = tcp4
+      [0x00 0x1b]                                   # length
+      [0xc0 0xa8 0x00 0x01]                         # source address = 192.168.1.1
+      [0xc0 0xa8 0x00 0xfe]                         # destination address = 192.168.1.254
+      [0x80 0x00]                                   # source port = 32768
+      [0x01 0xbb]                                   # destination port = 443
+      [0xf0 0x00 0x0c] "experimental"               # experimental
 write flush

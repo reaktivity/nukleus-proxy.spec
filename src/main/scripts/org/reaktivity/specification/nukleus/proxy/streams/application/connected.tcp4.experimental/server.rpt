@@ -14,15 +14,20 @@
 # under the License.
 #
 
-connect await ROUTED_SERVER
-        "nukleus://streams/net#0"
-    option nukleus:window 8192
-    option nukleus:transmission "half-duplex"
-connected
+accept "nukleus://streams/app#0"
+       option nukleus:window 8192
+       option nukleus:transmission "duplex"
+accepted
 
-write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
-      [0x20]                                        # version = 2, command = local
-      [0x00]                                        # protocol = unspecified
-      [0x00 0x07]                                   # length
-      "ignored"
-write flush
+read nukleus:begin.ext ${proxy:matchBeginEx()
+                              .typeId(nukleus:id("proxy"))
+                              .addressInet()
+                                .protocol("stream")
+                                .source("192.168.0.1")
+                                .destination("192.168.0.254")
+                                .sourcePort(32768)
+                                .destinationPort(443)
+                                .build()
+                              .build()}
+
+connected

@@ -302,6 +302,28 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.ssl.experimental/client",
+        "${scripts}/connected.tcp4.ssl.experimental/server"})
+    public void shouldConnectTcp4WithSslExperimental() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.experimental/client",
+        "${scripts}/connected.tcp4.experimental/server"})
+    public void shouldConnectTcp4WithExperimental() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.udp4/client",
         "${scripts}/connected.udp4/server"})
     public void shouldConnectUdp4() throws Exception
@@ -357,6 +379,28 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/rejected.header.mismatch/client",
+        "${scripts}/rejected.header.mismatch/server"})
+    public void shouldRejectHeaderMismatch() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.header.version.mismatch/client",
+        "${scripts}/rejected.header.version.mismatch/server"})
+    public void shouldRejectHeaderVersionMismatch() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/rejected.tcp4.crc32c.mismatch/client",
         "${scripts}/rejected.tcp4.crc32c.mismatch/server"})
     public void shouldRejectTcp4WithCrc32cMismatch() throws Exception
@@ -382,6 +426,72 @@ public class NetworkIT
         "${scripts}/rejected.tcp4.crc32c.underflow/client",
         "${scripts}/rejected.tcp4.crc32c.underflow/server"})
     public void shouldRejectTcp4WithCrc32cUnderflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.tcp4.ssl.underflow/client",
+        "${scripts}/rejected.tcp4.ssl.underflow/server"})
+    public void shouldRejectTcp4WithSslUnderflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.tcp4.underflow/client",
+        "${scripts}/rejected.tcp4.underflow/server"})
+    public void shouldRejectTcp4Underflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.tcp6.underflow/client",
+        "${scripts}/rejected.tcp6.underflow/server"})
+    public void shouldRejectTcp6Underflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.sock.stream.underflow/client",
+        "${scripts}/rejected.sock.stream.underflow/server"})
+    public void shouldRejectSockStreamUnderflow() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.address.family.mismatch/client",
+        "${scripts}/rejected.address.family.mismatch/server"})
+    public void shouldRejectAddressFamilyMismatch() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/rejected.command.mismatch/client",
+        "${scripts}/rejected.command.mismatch/server"})
+    public void shouldRejectCommandMismatch() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");

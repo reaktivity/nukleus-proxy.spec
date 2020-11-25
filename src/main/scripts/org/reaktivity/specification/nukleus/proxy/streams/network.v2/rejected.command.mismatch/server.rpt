@@ -14,15 +14,15 @@
 # under the License.
 #
 
-connect await ROUTED_SERVER
-        "nukleus://streams/net#0"
-    option nukleus:window 8192
-    option nukleus:transmission "half-duplex"
+accept "nukleus://streams/net#0"
+       option nukleus:window 8192
+       option nukleus:transmission "half-duplex"
+accepted
+
 connected
 
-write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
-      [0x20]                                        # version = 2, command = local
-      [0x00]                                        # protocol = unspecified
-      [0x00 0x07]                                   # length
-      "ignored"
-write flush
+read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
+     [0x22]                                         # version = 2
+
+read abort
+write aborted

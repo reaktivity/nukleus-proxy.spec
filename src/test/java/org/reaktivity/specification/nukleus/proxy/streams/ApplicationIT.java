@@ -258,6 +258,17 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.noop/client",
+        "${scripts}/connected.tcp4.noop/server"})
+    public void shouldConnectTcp4WithNoop() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.tcp4.ssl/client",
         "${scripts}/connected.tcp4.ssl/server"})
     public void shouldConnectTcp4WithSsl() throws Exception
@@ -283,6 +294,28 @@ public class ApplicationIT
         "${scripts}/connected.tcp4.ssl.client.cert.session/client",
         "${scripts}/connected.tcp4.ssl.client.cert.session/server"})
     public void shouldConnectTcp4WithSslClientCertificateSession() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.ssl.experimental/client",
+        "${scripts}/connected.tcp4.ssl.experimental/server"})
+    public void shouldConnectTcp4WithSslExperimental() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp4.experimental/client",
+        "${scripts}/connected.tcp4.experimental/server"})
+    public void shouldConnectTcp4WithExperimental() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");
