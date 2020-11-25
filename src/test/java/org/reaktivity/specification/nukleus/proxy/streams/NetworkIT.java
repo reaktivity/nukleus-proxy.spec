@@ -71,6 +71,28 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/connected.local.client.sent.abort/client",
+        "${scripts}/connected.local.client.sent.abort/server"})
+    public void shouldConnectLocalClientSendsAbort() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.client.sent.reset/client",
+        "${scripts}/connected.local.client.sent.reset/server"})
+    public void shouldConnectLocalClientSendsReset() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.local.client.sent.data/client",
         "${scripts}/connected.local.client.sent.data/server"})
     public void shouldConnectLocalClientSendsData() throws Exception
@@ -107,6 +129,28 @@ public class NetworkIT
         "${scripts}/connected.local.server.sent.close/client",
         "${scripts}/connected.local.server.sent.close/server"})
     public void shouldConnectLocalServerSendsClose() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.abort/client",
+        "${scripts}/connected.local.server.sent.abort/server"})
+    public void shouldConnectLocalServerSendsAbort() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.server.sent.reset/client",
+        "${scripts}/connected.local.server.sent.reset/server"})
+    public void shouldConnectLocalServerSendsReset() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_SERVER");

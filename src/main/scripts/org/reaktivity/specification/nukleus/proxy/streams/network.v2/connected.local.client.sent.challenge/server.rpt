@@ -28,8 +28,4 @@ read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
 
 write flush
 
-# TODO remove
-write "opened"
-write flush
-
 write advised nukleus:challenge

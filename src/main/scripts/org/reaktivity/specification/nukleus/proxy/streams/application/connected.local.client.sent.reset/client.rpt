@@ -14,11 +14,10 @@
 # under the License.
 #
 
-accept "nukleus://streams/app#0"
-       option nukleus:window 8192
-       option nukleus:transmission "duplex"
-accepted
-
+connect await ROUTED_SERVER
+        "nukleus://streams/app#0"
+    option nukleus:window 8192
+    option nukleus:transmission "duplex"
 connected
 
-write advised nukleus:challenge
+read abort

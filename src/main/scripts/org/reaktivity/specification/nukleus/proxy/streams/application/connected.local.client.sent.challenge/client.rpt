@@ -20,7 +20,4 @@ connect await ROUTED_SERVER
     option nukleus:transmission "duplex"
 connected
 
-# TODO remove
-read "opened"
-
 read advise nukleus:challenge

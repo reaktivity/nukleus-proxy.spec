@@ -27,6 +27,5 @@ write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
 write flush
 
 # TODO: read opened (half-duplex)
-read "opened"
 
 read advise nukleus:challenge
