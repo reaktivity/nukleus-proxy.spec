@@ -181,6 +181,17 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.crc32c/client",
+        "${scripts}/connected.tcp4.crc32c/server"})
+    public void shouldConnectTcp4WithCrc32c() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.tcp4.identity/client",
         "${scripts}/connected.tcp4.identity/server"})
     public void shouldConnectTcp4WithIdentity() throws Exception
