@@ -22,7 +22,7 @@ connect await ROUTED_SERVER
 write nukleus:begin.ext ${proxy:beginEx()
                                .typeId(nukleus:id("proxy"))
                                .addressUnix()
-                                 .protocol("datagram")
+                                 .protocol("stream")
                                  .source("source-123456789abcd")
                                  .destination("destination-12345678")
                                  .build()
