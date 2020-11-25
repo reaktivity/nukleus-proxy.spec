@@ -15,14 +15,14 @@
 #
 
 connect await ROUTED_SERVER
-        "nukleus://streams/proxy#0"
+        "nukleus://streams/app#0"
     option nukleus:window 8192
     option nukleus:transmission "duplex"
 
 write nukleus:begin.ext ${proxy:beginEx()
                                .typeId(nukleus:id("proxy"))
                                .addressUnix()
-                                 .protocol("datagram")
+                                 .protocol("stream")
                                  .source("source-123456789abcd")
                                  .destination("destination-12345678")
                                  .build()

@@ -14,19 +14,16 @@
 # under the License.
 #
 
-property serverAddress "nukleus://streams/proxy#0"
-
-accept ${serverAddress}
+accept "nukleus://streams/net#0"
        option nukleus:window 8192
-       option nukleus:transmission "duplex"
+       option nukleus:transmission "half-duplex"
 accepted
 
 connected
 
-read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"
-
-read [0x20]                                         # version = 2, command = local
+read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
+     [0x20]                                         # version = 2, command = local
      [0x00]                                         # protocol = unspecified
-     [0x00]                                         # length
+     [0x00 0x00]                                    # length
 
 write "Hello, world"

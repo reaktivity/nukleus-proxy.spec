@@ -14,9 +14,7 @@
 # under the License.
 #
 
-property serverAddress "nukleus://streams/proxy#0"
-
-accept ${serverAddress}
+accept "nukleus://streams/app#0"
        option nukleus:window 8192
        option nukleus:transmission "duplex"
 accepted
@@ -24,7 +22,7 @@ accepted
 read nukleus:begin.ext ${proxy:matchBeginEx()
                               .typeId(nukleus:id("proxy"))
                               .addressUnix()
-                                .protocol("datagram")
+                                .protocol("stream")
                                 .source("source-123456789abcd")
                                 .destination("destination-12345678")
                                 .build()

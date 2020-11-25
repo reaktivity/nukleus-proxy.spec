@@ -29,8 +29,8 @@ read (long:correlationIdRG010001N)
 read ${core:string("proxy")}
 read [0x00]
 read [0..8] # authorization
-read ${core:string("proxy#0")}
-read ${core:string("target#0")}
+read ${core:string("net#0")}
+read ${core:string("app#0")}
 read ${proxy:routeEx()
             .addressInet()
               .protocol("stream")
@@ -43,7 +43,7 @@ read ${proxy:routeEx()
 
 write 0x40000001
 write ${correlationIdRG010001N}
-write ${nukleus:newServerRouteId("echo#0", "echo#0")}
+write ${nukleus:newServerRouteId("net#0", "app#0")}
 write flush
 
 close
