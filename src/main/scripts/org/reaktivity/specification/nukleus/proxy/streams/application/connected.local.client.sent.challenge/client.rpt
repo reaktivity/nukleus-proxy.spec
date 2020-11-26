@@ -20,4 +20,5 @@ connect await ROUTED_CLIENT
     option nukleus:transmission "half-duplex"
 connected
 
+# TODO read opened
 read advise nukleus:challenge
