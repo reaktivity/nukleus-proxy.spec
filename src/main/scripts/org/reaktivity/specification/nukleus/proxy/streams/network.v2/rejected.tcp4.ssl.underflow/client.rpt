@@ -31,3 +31,6 @@ write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"              # header
       [0x20 0x00 0x04]                                  # ssl
       "oops"
 write flush
+
+write aborted
+read abort
