@@ -116,8 +116,8 @@ scope proxy
 
     struct ProxyAddressRangeUnix
     {
-        octets[108] prefix;
         uint8 length;
+        octets[length] prefix;
     }
 
     struct ProxyPortRange

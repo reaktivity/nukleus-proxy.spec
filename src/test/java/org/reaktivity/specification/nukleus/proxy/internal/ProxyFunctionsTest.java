@@ -75,6 +75,19 @@ public class ProxyFunctionsTest
                                          .sourcePort(32768)
                                          .destinationPort(443)
                                          .build()
+                                     .info()
+                                         .alpn("echo")
+                                         .authority("example.com")
+                                         .identity(fromHex("12345678"))
+                                         .namespace("example")
+                                         .secure()
+                                             .protocol("TLSv1.3")
+                                             .cipher("ECDHE-RSA-AES128-GCM-SHA256")
+                                             .signature("SHA256")
+                                             .name("name@domain")
+                                             .key("RSA2048")
+                                             .build()
+                                         .build()
                                      .build();
         DirectBuffer buffer = new UnsafeBuffer(build);
         ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
@@ -82,13 +95,244 @@ public class ProxyFunctionsTest
         assertEquals(INET, routeEx.address().kind());
         assertEquals(STREAM, routeEx.address().inet().protocol().get());
         assertEquals(new UnsafeBuffer(fromHex("c0a80001")), routeEx.address().inet().source().prefix().value());
-        assertEquals(32, routeEx.address().inet().source().length());
+        assertEquals(4, routeEx.address().inet().source().length());
         assertEquals(new UnsafeBuffer(fromHex("c0a80101")), routeEx.address().inet().destination().prefix().value());
-        assertEquals(32, routeEx.address().inet().destination().length());
+        assertEquals(4, routeEx.address().inet().destination().length());
         assertEquals(32768, routeEx.address().inet().sourcePort().low());
         assertEquals(32768, routeEx.address().inet().sourcePort().high());
         assertEquals(443, routeEx.address().inet().destinationPort().low());
         assertEquals(443, routeEx.address().inet().destinationPort().high());
+        ProxyInfoFW info = new ProxyInfoFW();
+        final DirectBuffer infos = routeEx.infos().items();
+        for (int index = 0, offset = 0; offset < infos.capacity(); index++)
+        {
+            info.wrap(infos, offset, infos.capacity());
+            switch (index)
+            {
+            case 0:
+                assertEquals(ALPN, info.kind());
+                assertEquals("echo", info.alpn().asString());
+                break;
+            case 1:
+                assertEquals(AUTHORITY, info.kind());
+                assertEquals("example.com", info.authority().asString());
+                break;
+            case 2:
+                assertEquals(IDENTITY, info.kind());
+                assertEquals(new UnsafeBuffer(fromHex("12345678")), info.identity().value().value());
+                break;
+            case 3:
+                assertEquals(NAMESPACE, info.kind());
+                assertEquals("example", info.namespace().asString());
+                break;
+            case 4:
+                assertEquals(SECURE, info.kind());
+                assertEquals(PROTOCOL, info.secure().kind());
+                assertEquals("TLSv1.3", info.secure().protocol().asString());
+                break;
+            case 5:
+                assertEquals(SECURE, info.kind());
+                assertEquals(CIPHER, info.secure().kind());
+                assertEquals("ECDHE-RSA-AES128-GCM-SHA256", info.secure().cipher().asString());
+                break;
+            case 6:
+                assertEquals(SECURE, info.kind());
+                assertEquals(SIGNATURE, info.secure().kind());
+                assertEquals("SHA256", info.secure().signature().asString());
+                break;
+            case 7:
+                assertEquals(SECURE, info.kind());
+                assertEquals(NAME, info.secure().kind());
+                assertEquals("name@domain", info.secure().name().asString());
+                break;
+            case 8:
+                assertEquals(SECURE, info.kind());
+                assertEquals(KEY, info.secure().kind());
+                assertEquals("RSA2048", info.secure().key().asString());
+                break;
+            }
+            offset = info.limit();
+        }
+    }
+
+    @Test
+    public void shouldGenerateInet6RouteExtension() throws UnknownHostException
+    {
+        byte[] build = ProxyFunctions.routeEx()
+                                     .addressInet6()
+                                         .protocol("stream")
+                                         .source("fd12:3456:789a:1::1")
+                                         .destination("fd12:3456:789a:1::fe")
+                                         .sourcePort(32768)
+                                         .destinationPort(443)
+                                         .build()
+                                     .info()
+                                         .alpn("echo")
+                                         .authority("example.com")
+                                         .identity(fromHex("12345678"))
+                                         .namespace("example")
+                                         .secure()
+                                             .protocol("TLSv1.3")
+                                             .cipher("ECDHE-RSA-AES128-GCM-SHA256")
+                                             .signature("SHA256")
+                                             .name("name@domain")
+                                             .key("RSA2048")
+                                             .build()
+                                         .build()
+                                     .build();
+        DirectBuffer buffer = new UnsafeBuffer(build);
+        ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
+        assertNotNull(routeEx);
+        assertEquals(INET6, routeEx.address().kind());
+        assertEquals(STREAM, routeEx.address().inet6().protocol().get());
+        assertEquals(new UnsafeBuffer(fromHex("fd123456789a00010000000000000001")),
+                routeEx.address().inet6().source().prefix().value());
+        assertEquals(16, routeEx.address().inet6().source().length());
+        assertEquals(new UnsafeBuffer(fromHex("fd123456789a000100000000000000fe")),
+                routeEx.address().inet6().destination().prefix().value());
+        assertEquals(16, routeEx.address().inet6().destination().length());
+        assertEquals(32768, routeEx.address().inet6().sourcePort().low());
+        assertEquals(32768, routeEx.address().inet6().sourcePort().high());
+        assertEquals(443, routeEx.address().inet6().destinationPort().low());
+        assertEquals(443, routeEx.address().inet6().destinationPort().high());
+        ProxyInfoFW info = new ProxyInfoFW();
+        final DirectBuffer infos = routeEx.infos().items();
+        for (int index = 0, offset = 0; offset < infos.capacity(); index++)
+        {
+            info.wrap(infos, offset, infos.capacity());
+            switch (index)
+            {
+            case 0:
+                assertEquals(ALPN, info.kind());
+                assertEquals("echo", info.alpn().asString());
+                break;
+            case 1:
+                assertEquals(AUTHORITY, info.kind());
+                assertEquals("example.com", info.authority().asString());
+                break;
+            case 2:
+                assertEquals(IDENTITY, info.kind());
+                assertEquals(new UnsafeBuffer(fromHex("12345678")), info.identity().value().value());
+                break;
+            case 3:
+                assertEquals(NAMESPACE, info.kind());
+                assertEquals("example", info.namespace().asString());
+                break;
+            case 4:
+                assertEquals(SECURE, info.kind());
+                assertEquals(PROTOCOL, info.secure().kind());
+                assertEquals("TLSv1.3", info.secure().protocol().asString());
+                break;
+            case 5:
+                assertEquals(SECURE, info.kind());
+                assertEquals(CIPHER, info.secure().kind());
+                assertEquals("ECDHE-RSA-AES128-GCM-SHA256", info.secure().cipher().asString());
+                break;
+            case 6:
+                assertEquals(SECURE, info.kind());
+                assertEquals(SIGNATURE, info.secure().kind());
+                assertEquals("SHA256", info.secure().signature().asString());
+                break;
+            case 7:
+                assertEquals(SECURE, info.kind());
+                assertEquals(NAME, info.secure().kind());
+                assertEquals("name@domain", info.secure().name().asString());
+                break;
+            case 8:
+                assertEquals(SECURE, info.kind());
+                assertEquals(KEY, info.secure().kind());
+                assertEquals("RSA2048", info.secure().key().asString());
+                break;
+            }
+            offset = info.limit();
+        }
+    }
+
+    @Test
+    public void shouldGenerateUnixRouteExtension() throws UnknownHostException
+    {
+        byte[] build = ProxyFunctions.routeEx()
+                                     .addressUnix()
+                                         .protocol("stream")
+                                         .source("source")
+                                         .destination("destination")
+                                         .build()
+                                     .info()
+                                         .alpn("echo")
+                                         .authority("example.com")
+                                         .identity(fromHex("12345678"))
+                                         .namespace("example")
+                                         .secure()
+                                             .protocol("TLSv1.3")
+                                             .cipher("ECDHE-RSA-AES128-GCM-SHA256")
+                                             .signature("SHA256")
+                                             .name("name@domain")
+                                             .key("RSA2048")
+                                             .build()
+                                         .build()
+                                     .build();
+        DirectBuffer buffer = new UnsafeBuffer(build);
+        ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
+        assertNotNull(routeEx);
+        assertEquals(UNIX, routeEx.address().kind());
+        assertEquals(STREAM, routeEx.address().unix().protocol().get());
+        assertEquals("source",
+                routeEx.address().unix().source().prefix().value().getStringWithoutLengthUtf8(0, 6));
+        assertEquals(6, routeEx.address().unix().source().length());
+        assertEquals("destination",
+                routeEx.address().unix().destination().prefix().value().getStringWithoutLengthUtf8(0, 11));
+        assertEquals(11, routeEx.address().unix().destination().length());
+        ProxyInfoFW info = new ProxyInfoFW();
+        final DirectBuffer infos = routeEx.infos().items();
+        for (int index = 0, offset = 0; offset < infos.capacity(); index++)
+        {
+            info.wrap(infos, offset, infos.capacity());
+            switch (index)
+            {
+            case 0:
+                assertEquals(ALPN, info.kind());
+                assertEquals("echo", info.alpn().asString());
+                break;
+            case 1:
+                assertEquals(AUTHORITY, info.kind());
+                assertEquals("example.com", info.authority().asString());
+                break;
+            case 2:
+                assertEquals(IDENTITY, info.kind());
+                assertEquals(new UnsafeBuffer(fromHex("12345678")), info.identity().value().value());
+                break;
+            case 3:
+                assertEquals(NAMESPACE, info.kind());
+                assertEquals("example", info.namespace().asString());
+                break;
+            case 4:
+                assertEquals(SECURE, info.kind());
+                assertEquals(PROTOCOL, info.secure().kind());
+                assertEquals("TLSv1.3", info.secure().protocol().asString());
+                break;
+            case 5:
+                assertEquals(SECURE, info.kind());
+                assertEquals(CIPHER, info.secure().kind());
+                assertEquals("ECDHE-RSA-AES128-GCM-SHA256", info.secure().cipher().asString());
+                break;
+            case 6:
+                assertEquals(SECURE, info.kind());
+                assertEquals(SIGNATURE, info.secure().kind());
+                assertEquals("SHA256", info.secure().signature().asString());
+                break;
+            case 7:
+                assertEquals(SECURE, info.kind());
+                assertEquals(NAME, info.secure().kind());
+                assertEquals("name@domain", info.secure().name().asString());
+                break;
+            case 8:
+                assertEquals(SECURE, info.kind());
+                assertEquals(KEY, info.secure().kind());
+                assertEquals("RSA2048", info.secure().key().asString());
+                break;
+            }
+            offset = info.limit();
+        }
     }
 
     @Test

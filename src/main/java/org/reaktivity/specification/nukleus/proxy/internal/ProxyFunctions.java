@@ -15,6 +15,7 @@
  */
 package org.reaktivity.specification.nukleus.proxy.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
@@ -49,7 +50,9 @@ import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInet6FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInet6FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInetFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchUnixFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressUnixFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoFW;
@@ -96,6 +99,21 @@ public final class ProxyFunctions
             return new ProxyAddressMatchInetBuilder();
         }
 
+        public ProxyAddressMatchInet6Builder addressInet6()
+        {
+            return new ProxyAddressMatchInet6Builder();
+        }
+
+        public ProxyAddressMatchUnixBuilder addressUnix()
+        {
+            return new ProxyAddressMatchUnixBuilder();
+        }
+
+        public ProxyInfoMatchBuilder info()
+        {
+            return new ProxyInfoMatchBuilder();
+        }
+
         public byte[] build()
         {
             final ProxyRouteExFW routeEx = routeExRW.build();
@@ -127,7 +145,7 @@ public final class ProxyFunctions
             public ProxyAddressMatchInetBuilder source(
                 String source) throws UnknownHostException
             {
-                return source(source, 32);
+                return source(source, 4);
             }
 
             public ProxyAddressMatchInetBuilder source(
@@ -143,7 +161,7 @@ public final class ProxyFunctions
             public ProxyAddressMatchInetBuilder destination(
                 String destination) throws UnknownHostException
             {
-                return destination(destination, 32);
+                return destination(destination, 4);
             }
 
             public ProxyAddressMatchInetBuilder destination(
@@ -188,6 +206,234 @@ public final class ProxyFunctions
             {
                 routeExRW.address(addressRW.inet(addressInetRW.build()).build());
                 return ProxyRouteExBuilder.this;
+            }
+        }
+
+        public final class ProxyAddressMatchInet6Builder
+        {
+            private final ProxyAddressMatchFW.Builder addressRW = new ProxyAddressMatchFW.Builder();
+
+            private final ProxyAddressMatchInet6FW.Builder addressInet6RW = new ProxyAddressMatchInet6FW.Builder();
+
+            private ProxyAddressMatchInet6Builder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[44]);
+                addressRW.wrap(buffer, 0, buffer.capacity());
+                addressInet6RW.wrap(buffer, 1, buffer.capacity());
+            }
+
+            public ProxyAddressMatchInet6Builder protocol(
+                String protocol)
+            {
+                addressInet6RW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                return this;
+            }
+
+            public ProxyAddressMatchInet6Builder source(
+                String source) throws UnknownHostException
+            {
+                return source(source, 16);
+            }
+
+            public ProxyAddressMatchInet6Builder source(
+                String prefix,
+                int length) throws UnknownHostException
+            {
+                final InetAddress inet = InetAddress.getByName(prefix);
+                final byte[] ip = inet.getAddress();
+                addressInet6RW.source(s -> s.prefix(p -> p.set(ip)).length(length));
+                return this;
+            }
+
+            public ProxyAddressMatchInet6Builder destination(
+                String destination) throws UnknownHostException
+            {
+                return destination(destination, 16);
+            }
+
+            public ProxyAddressMatchInet6Builder destination(
+                String prefix,
+                int length) throws UnknownHostException
+            {
+                final InetAddress inet = InetAddress.getByName(prefix);
+                final byte[] ip = inet.getAddress();
+                addressInet6RW.destination(s -> s.prefix(p -> p.set(ip)).length(length));
+                return this;
+            }
+
+            public ProxyAddressMatchInet6Builder sourcePort(
+                int sourcePort)
+            {
+                return sourcePort(sourcePort, sourcePort);
+            }
+
+            public ProxyAddressMatchInet6Builder sourcePort(
+                int low,
+                int high)
+            {
+                addressInet6RW.sourcePort(r -> r.low(low).high(high));
+                return this;
+            }
+
+            public ProxyAddressMatchInet6Builder destinationPort(
+                int destinationPort)
+            {
+                return destinationPort(destinationPort, destinationPort);
+            }
+
+            public ProxyAddressMatchInet6Builder destinationPort(
+                int low,
+                int high)
+            {
+                addressInet6RW.destinationPort(r -> r.low(low).high(high));
+                return this;
+            }
+
+            public ProxyRouteExBuilder build()
+            {
+                routeExRW.address(addressRW.inet6(addressInet6RW.build()).build());
+                return ProxyRouteExBuilder.this;
+            }
+        }
+
+        public final class ProxyAddressMatchUnixBuilder
+        {
+            private final ProxyAddressMatchFW.Builder addressRW = new ProxyAddressMatchFW.Builder();
+
+            private final ProxyAddressMatchUnixFW.Builder addressUnixRW = new ProxyAddressMatchUnixFW.Builder();
+
+            private ProxyAddressMatchUnixBuilder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[224]);
+                addressRW.wrap(buffer, 0, buffer.capacity());
+                addressUnixRW.wrap(buffer, 1, buffer.capacity());
+            }
+
+            public ProxyAddressMatchUnixBuilder protocol(
+                String protocol)
+            {
+                addressUnixRW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                return this;
+            }
+
+            public ProxyAddressMatchUnixBuilder source(
+                String source) throws UnknownHostException
+            {
+                final byte[] prefix = source.getBytes(UTF_8);
+                addressUnixRW.source(s -> s.prefix(p -> p.set(prefix)));
+                return this;
+            }
+
+            public ProxyAddressMatchUnixBuilder destination(
+                String destination) throws UnknownHostException
+            {
+                final byte[] prefix = destination.getBytes(UTF_8);
+                addressUnixRW.destination(s -> s.prefix(p -> p.set(prefix)));
+                return this;
+            }
+
+            public ProxyRouteExBuilder build()
+            {
+                routeExRW.address(addressRW.unix(addressUnixRW.build()).build());
+                return ProxyRouteExBuilder.this;
+            }
+        }
+
+        public final class ProxyInfoMatchBuilder
+        {
+            private final Array32FW.Builder<ProxyInfoFW.Builder, ProxyInfoFW> infosRW =
+                    new Array32FW.Builder<>(new ProxyInfoFW.Builder(), new ProxyInfoFW());
+
+            private ProxyInfoMatchBuilder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[1024]);
+                infosRW.wrap(buffer, 0, buffer.capacity());
+            }
+
+            public ProxyInfoMatchBuilder alpn(
+                String alpn)
+            {
+                infosRW.item(i -> i.alpn(alpn));
+                return this;
+            }
+
+            public ProxyInfoMatchBuilder authority(
+                String authority)
+            {
+                infosRW.item(i -> i.authority(authority));
+                return this;
+            }
+
+            public ProxyInfoMatchBuilder identity(
+                byte[] identity)
+            {
+                infosRW.item(i -> i.identity(id -> id.value(v -> v.set(identity))));
+                return this;
+            }
+
+            public ProxyInfoMatchBuilder namespace(
+                String namespace)
+            {
+                infosRW.item(i -> i.namespace(namespace));
+                return this;
+            }
+
+            public ProxySecureInfoMatchBuilder secure()
+            {
+                return new ProxySecureInfoMatchBuilder();
+            }
+
+            public ProxyRouteExBuilder build()
+            {
+                routeExRW.infos(infosRW.build());
+                return ProxyRouteExBuilder.this;
+            }
+
+            public final class ProxySecureInfoMatchBuilder
+            {
+                private ProxySecureInfoMatchBuilder()
+                {
+                }
+
+                public ProxySecureInfoMatchBuilder protocol(
+                    String protocol)
+                {
+                    infosRW.item(i -> i.secure(s -> s.protocol(protocol)));
+                    return this;
+                }
+
+                public ProxySecureInfoMatchBuilder cipher(
+                    String cipher)
+                {
+                    infosRW.item(i -> i.secure(s -> s.cipher(cipher)));
+                    return this;
+                }
+
+                public ProxySecureInfoMatchBuilder signature(
+                    String signature)
+                {
+                    infosRW.item(i -> i.secure(s -> s.signature(signature)));
+                    return this;
+                }
+
+                public ProxySecureInfoMatchBuilder name(
+                    String name)
+                {
+                    infosRW.item(i -> i.secure(s -> s.name(name)));
+                    return this;
+                }
+
+                public ProxySecureInfoMatchBuilder key(
+                    String key)
+                {
+                    infosRW.item(i -> i.secure(s -> s.key(key)));
+                    return this;
+                }
+
+                public ProxyInfoMatchBuilder build()
+                {
+                    return ProxyInfoMatchBuilder.this;
+                }
             }
         }
     }
