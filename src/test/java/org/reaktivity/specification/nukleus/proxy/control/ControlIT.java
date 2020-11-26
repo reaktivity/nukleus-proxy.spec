@@ -57,6 +57,46 @@ public class ControlIT
 
     @Test
     @Specification({
+        "route/server.tcp4.alpn/nukleus",
+        "route/server.tcp4.alpn/controller"
+    })
+    public void shouldRouteServerTcp4Alpn() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "route/server.tcp4.ssl.version/nukleus",
+        "route/server.tcp4.ssl.version/controller"
+    })
+    public void shouldRouteServerTcp4SslVersion() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "route/server.tcp6/nukleus",
+        "route/server.tcp6/controller"
+    })
+    public void shouldRouteServerTcp6() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "route/server.sock.stream/nukleus",
+        "route/server.sock.stream/controller"
+    })
+    public void shouldRouteServerSockStream() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "route/client/nukleus",
         "route/client/controller"
     })
