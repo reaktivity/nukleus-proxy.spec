@@ -31,3 +31,6 @@ read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"               # header
      [0x01 0xbb]                                        # destination port = 443
      [0x20 0x00 0x04]                                   # ssl
      "oops"
+
+read abort
+write aborted
