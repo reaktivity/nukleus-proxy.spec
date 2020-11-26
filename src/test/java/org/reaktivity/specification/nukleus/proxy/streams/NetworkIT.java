@@ -49,6 +49,17 @@ public class NetworkIT
 
     @Test
     @Specification({
+        "${scripts}/connected.local.discard/client",
+        "${scripts}/connected.local.discard/server"})
+    public void shouldConnectLocalDiscard() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.local.client.sent.begin.ext/client",
         "${scripts}/connected.local.client.sent.begin.ext/server"})
     public void shouldConnectLocalClientSendsBeginExt() throws Exception

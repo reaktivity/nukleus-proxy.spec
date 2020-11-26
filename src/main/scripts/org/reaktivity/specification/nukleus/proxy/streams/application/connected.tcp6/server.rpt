@@ -16,7 +16,7 @@
 
 accept "nukleus://streams/app#0"
        option nukleus:window 8192
-       option nukleus:transmission "duplex"
+       option nukleus:transmission "half-duplex"
 accepted
 
 read nukleus:begin.ext ${proxy:matchBeginEx()

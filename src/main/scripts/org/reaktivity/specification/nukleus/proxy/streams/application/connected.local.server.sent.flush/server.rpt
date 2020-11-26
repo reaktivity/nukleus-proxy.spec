@@ -16,9 +16,11 @@
 
 accept "nukleus://streams/app#0"
        option nukleus:window 8192
-       option nukleus:transmission "duplex"
+       option nukleus:transmission "half-duplex"
 accepted
 
 connected
+
+write flush
 
 write advise nukleus:flush

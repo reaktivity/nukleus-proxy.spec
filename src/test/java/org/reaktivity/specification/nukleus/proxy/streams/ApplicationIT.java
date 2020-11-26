@@ -43,7 +43,18 @@ public class ApplicationIT
     public void shouldConnectLocal() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.local.discard/client",
+        "${scripts}/connected.local.discard/server"})
+    public void shouldConnectLocalDiscard() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -54,7 +65,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsBeginExt() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -65,7 +76,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsData() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -76,7 +87,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsFlush() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -87,7 +98,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsChallenge() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -98,7 +109,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsClose() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -109,7 +120,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsAbort() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -120,7 +131,7 @@ public class ApplicationIT
     public void shouldConnectLocalClientSendsReset() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -131,7 +142,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsData() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -142,7 +153,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsFlush() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -153,7 +164,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsChallenge() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -164,7 +175,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsClose() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -175,7 +186,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsAbort() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
     @Test
@@ -185,7 +196,7 @@ public class ApplicationIT
     public void shouldConnectLocalServerSendsReset() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -197,7 +208,7 @@ public class ApplicationIT
     public void shouldConnectTcp4() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -208,7 +219,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithAlpn() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -219,7 +230,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithAuthority() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -230,7 +241,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithCrc32c() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -241,7 +252,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithIdentity() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -252,7 +263,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithNamespace() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -263,7 +274,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithNoop() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -274,7 +285,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithSsl() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -285,7 +296,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithSslClientCertificate() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -296,7 +307,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithSslClientCertificateSession() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -307,7 +318,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithSslExperimental() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -318,7 +329,7 @@ public class ApplicationIT
     public void shouldConnectTcp4WithExperimental() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -329,7 +340,7 @@ public class ApplicationIT
     public void shouldConnectUdp4() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -340,7 +351,7 @@ public class ApplicationIT
     public void shouldConnectTcp6() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -351,7 +362,7 @@ public class ApplicationIT
     public void shouldConnectUdp6() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -362,7 +373,7 @@ public class ApplicationIT
     public void shouldConnectSockStream() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
@@ -373,7 +384,7 @@ public class ApplicationIT
     public void shouldConnectSockDatagram() throws Exception
     {
         k3po.start();
-        k3po.notifyBarrier("ROUTED_SERVER");
+        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 }
