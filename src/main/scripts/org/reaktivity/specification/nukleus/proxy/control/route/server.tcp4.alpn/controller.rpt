@@ -34,7 +34,7 @@ write ${routeAuthorization}
 write ${core:string("net#0")}
 write ${core:string("app#0")}
 write ${proxy:routeEx()
-             .addressInet()
+             .addressInet4()
                .protocol("stream")
                .source("0.0.0.0", 0)
                .destination("0.0.0.0", 0)

@@ -21,7 +21,7 @@ connect await ROUTED_SERVER
 
 write nukleus:begin.ext ${proxy:beginEx()
                                .typeId(nukleus:id("proxy"))
-                               .addressInet()
+                               .addressInet4()
                                  .protocol("stream")
                                  .source("192.168.0.1")
                                  .destination("192.168.0.254")

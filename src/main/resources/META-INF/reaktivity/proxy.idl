@@ -28,7 +28,7 @@ scope proxy
         DATAGRAM
     }
 
-    struct ProxyAddressInet
+    struct ProxyAddressInet4
     {
         ProxyAddressProtocol protocol;
         octets[4] source;
@@ -55,7 +55,7 @@ scope proxy
 
     union ProxyAddress switch (ProxyAddressFamily)
     {
-        case INET: ProxyAddressInet inet;
+        case INET: ProxyAddressInet4 inet4;
         case INET6: ProxyAddressInet6 inet6;
         case UNIX: ProxyAddressUnix unix;
     }
@@ -102,7 +102,7 @@ scope proxy
         case SECURE: ProxySecureInfo secure;
     }
 
-    struct ProxyAddressRangeInet
+    struct ProxyAddressRangeInet4
     {
         octets[4] prefix;
         uint8 length;
@@ -126,11 +126,11 @@ scope proxy
         uint16 high;
     }
 
-    struct ProxyAddressMatchInet
+    struct ProxyAddressMatchInet4
     {
         ProxyAddressProtocol protocol;
-        ProxyAddressRangeInet source;
-        ProxyAddressRangeInet destination;
+        ProxyAddressRangeInet4 source;
+        ProxyAddressRangeInet4 destination;
         ProxyPortRange sourcePort;
         ProxyPortRange destinationPort;
     }
@@ -153,7 +153,7 @@ scope proxy
 
     union ProxyAddressMatch switch (ProxyAddressFamily)
     {
-        case INET: ProxyAddressMatchInet inet;
+        case INET: ProxyAddressMatchInet4 inet4;
         case INET6: ProxyAddressMatchInet6 inet6;
         case UNIX: ProxyAddressMatchUnix unix;
     }

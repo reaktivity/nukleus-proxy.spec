@@ -32,7 +32,7 @@ read [0..8] # authorization
 read ${core:string("net#0")}
 read ${core:string("app#0")}
 read ${proxy:routeEx()
-            .addressInet()
+            .addressInet4()
               .protocol("stream")
               .source("0.0.0.0", 0)
               .destination("0.0.0.0", 0)
