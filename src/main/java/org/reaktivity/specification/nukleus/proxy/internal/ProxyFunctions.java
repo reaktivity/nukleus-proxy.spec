@@ -16,7 +16,7 @@
 package org.reaktivity.specification.nukleus.proxy.internal;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET4;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
@@ -899,7 +899,7 @@ public final class ProxyFunctions
             private boolean match(
                 ProxyAddressFW address)
             {
-                return address.kind() == INET && match(address.inet4());
+                return address.kind() == INET4 && match(address.inet4());
             }
 
             private boolean match(

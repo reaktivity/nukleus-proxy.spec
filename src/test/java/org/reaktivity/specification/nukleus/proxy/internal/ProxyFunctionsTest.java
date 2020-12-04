@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET4;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol.STREAM;
@@ -92,7 +92,7 @@ public class ProxyFunctionsTest
         DirectBuffer buffer = new UnsafeBuffer(build);
         ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
         assertNotNull(routeEx);
-        assertEquals(INET, routeEx.address().kind());
+        assertEquals(INET4, routeEx.address().kind());
         assertEquals(STREAM, routeEx.address().inet4().protocol().get());
         assertEquals(new UnsafeBuffer(fromHex("c0a80001")), routeEx.address().inet4().source().prefix().value());
         assertEquals(4, routeEx.address().inet4().source().length());
@@ -365,7 +365,7 @@ public class ProxyFunctionsTest
         ProxyBeginExFW beginEx = new ProxyBeginExFW().wrap(buffer, 0, buffer.capacity());
         assertNotNull(beginEx);
         assertEquals(0x01, beginEx.typeId());
-        assertEquals(INET, beginEx.address().kind());
+        assertEquals(INET4, beginEx.address().kind());
         assertEquals(STREAM, beginEx.address().inet4().protocol().get());
         assertEquals(new UnsafeBuffer(fromHex("c0a80001")), beginEx.address().inet4().source().value());
         assertEquals(new UnsafeBuffer(fromHex("c0a800fe")), beginEx.address().inet4().destination().value());
