@@ -65,10 +65,10 @@ public class ProxyFunctionsTest
     }
 
     @Test
-    public void shouldGenerateInetRouteExtension() throws UnknownHostException
+    public void shouldGenerateInet4RouteExtension() throws UnknownHostException
     {
         byte[] build = ProxyFunctions.routeEx()
-                                     .addressInet()
+                                     .addressInet4()
                                          .protocol("stream")
                                          .source("192.168.0.1")
                                          .destination("192.168.1.1")
@@ -93,15 +93,15 @@ public class ProxyFunctionsTest
         ProxyRouteExFW routeEx = new ProxyRouteExFW().wrap(buffer, 0, buffer.capacity());
         assertNotNull(routeEx);
         assertEquals(INET, routeEx.address().kind());
-        assertEquals(STREAM, routeEx.address().inet().protocol().get());
-        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), routeEx.address().inet().source().prefix().value());
-        assertEquals(4, routeEx.address().inet().source().length());
-        assertEquals(new UnsafeBuffer(fromHex("c0a80101")), routeEx.address().inet().destination().prefix().value());
-        assertEquals(4, routeEx.address().inet().destination().length());
-        assertEquals(32768, routeEx.address().inet().sourcePort().low());
-        assertEquals(32768, routeEx.address().inet().sourcePort().high());
-        assertEquals(443, routeEx.address().inet().destinationPort().low());
-        assertEquals(443, routeEx.address().inet().destinationPort().high());
+        assertEquals(STREAM, routeEx.address().inet4().protocol().get());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), routeEx.address().inet4().source().prefix().value());
+        assertEquals(4, routeEx.address().inet4().source().length());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80101")), routeEx.address().inet4().destination().prefix().value());
+        assertEquals(4, routeEx.address().inet4().destination().length());
+        assertEquals(32768, routeEx.address().inet4().sourcePort().low());
+        assertEquals(32768, routeEx.address().inet4().sourcePort().high());
+        assertEquals(443, routeEx.address().inet4().destinationPort().low());
+        assertEquals(443, routeEx.address().inet4().destinationPort().high());
         ProxyInfoFW info = new ProxyInfoFW();
         final DirectBuffer infos = routeEx.infos().items();
         for (int index = 0, offset = 0; offset < infos.capacity(); index++)
@@ -336,11 +336,11 @@ public class ProxyFunctionsTest
     }
 
     @Test
-    public void shouldGenerateInetBeginExtension() throws UnknownHostException
+    public void shouldGenerateInet4BeginExtension() throws UnknownHostException
     {
         byte[] build = ProxyFunctions.beginEx()
                                      .typeId(0x01)
-                                     .addressInet()
+                                     .addressInet4()
                                          .protocol("stream")
                                          .source("192.168.0.1")
                                          .destination("192.168.0.254")
@@ -366,11 +366,11 @@ public class ProxyFunctionsTest
         assertNotNull(beginEx);
         assertEquals(0x01, beginEx.typeId());
         assertEquals(INET, beginEx.address().kind());
-        assertEquals(STREAM, beginEx.address().inet().protocol().get());
-        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), beginEx.address().inet().source().value());
-        assertEquals(new UnsafeBuffer(fromHex("c0a800fe")), beginEx.address().inet().destination().value());
-        assertEquals(32768, beginEx.address().inet().sourcePort());
-        assertEquals(443, beginEx.address().inet().destinationPort());
+        assertEquals(STREAM, beginEx.address().inet4().protocol().get());
+        assertEquals(new UnsafeBuffer(fromHex("c0a80001")), beginEx.address().inet4().source().value());
+        assertEquals(new UnsafeBuffer(fromHex("c0a800fe")), beginEx.address().inet4().destination().value());
+        assertEquals(32768, beginEx.address().inet4().sourcePort());
+        assertEquals(443, beginEx.address().inet4().destinationPort());
 
         ProxyInfoFW info = new ProxyInfoFW();
         final DirectBuffer infos = beginEx.infos().items();
@@ -426,11 +426,11 @@ public class ProxyFunctionsTest
     }
 
     @Test
-    public void shouldMatchInetBeginExtension() throws Exception
+    public void shouldMatchInet4BeginExtension() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .source("192.168.0.1")
                                                  .destination("192.168.0.254")
                                                  .sourcePort(32768)
@@ -455,11 +455,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.alpn("echo"))
             .infosItem(i -> i.authority("example.com"))
             .infosItem(i -> i.identity(id -> id.value(v -> v.set(fromHex("12345678")))))
@@ -475,7 +475,7 @@ public class ProxyFunctionsTest
     }
 
     @Test
-    public void shouldMatchInetBeginExtensionTypeId() throws Exception
+    public void shouldMatchInet4BeginExtensionTypeId() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -485,22 +485,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
     }
 
     @Test
-    public void shouldMatchInetBeginExtensionProtocol() throws Exception
+    public void shouldMatchInet4BeginExtensionProtocol() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .protocol("stream")
                                                  .build()
                                              .build();
@@ -509,22 +509,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
     }
 
     @Test
-    public void shouldMatchInetBeginExtensionSource() throws Exception
+    public void shouldMatchInet4BeginExtensionSource() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .source("192.168.0.1")
                                                  .build()
                                              .build();
@@ -533,22 +533,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
     }
 
     @Test
-    public void shouldMatchInetBeginExtensionDestination() throws Exception
+    public void shouldMatchInet4BeginExtensionDestination() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .destination("192.168.0.254")
                                                  .build()
                                              .build();
@@ -557,22 +557,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNotNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionProtocol() throws Exception
+    public void shouldNotMatchInet4BeginExtensionProtocol() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .protocol("datagram")
                                                  .build()
                                              .build();
@@ -581,22 +581,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSource() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSource() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .source("192.168.0.2")
                                                  .build()
                                              .build();
@@ -605,22 +605,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionDestination() throws Exception
+    public void shouldNotMatchInet4BeginExtensionDestination() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .destination("192.168.0.253")
                                                  .build()
                                              .build();
@@ -629,22 +629,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSourcePort() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSourcePort() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .sourcePort(32767)
                                                  .build()
                                              .build();
@@ -653,22 +653,22 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionDestinationPort() throws Exception
+    public void shouldNotMatchInet4BeginExtensionDestinationPort() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
-                                             .addressInet()
+                                             .addressInet4()
                                                  .destinationPort(444)
                                                  .build()
                                              .build();
@@ -677,18 +677,18 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionAlpn() throws Exception
+    public void shouldNotMatchInet4BeginExtensionAlpn() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -701,11 +701,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.alpn("echo"))
             .build();
 
@@ -713,7 +713,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionAuthority() throws Exception
+    public void shouldNotMatchInet4BeginExtensionAuthority() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -726,11 +726,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.authority("example.com"))
             .build();
 
@@ -738,7 +738,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionIdentity() throws Exception
+    public void shouldNotMatchInet4BeginExtensionIdentity() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -751,11 +751,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.identity(id -> id.value(v -> v.set(fromHex("12345678")))))
             .build();
 
@@ -763,7 +763,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionNamespace() throws Exception
+    public void shouldNotMatchInet4BeginExtensionNamespace() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -776,11 +776,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.namespace("example"))
             .build();
 
@@ -788,7 +788,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSecureProtocol() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSecureProtocol() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -803,11 +803,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.secure(s -> s.protocol("TLSv1.3")))
             .build();
 
@@ -815,7 +815,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSecureCipher() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSecureCipher() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -830,11 +830,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.secure(s -> s.cipher("ECDHE-RSA-AES128-GCM-SHA256")))
             .build();
 
@@ -842,7 +842,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSecureSignature() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSecureSignature() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -857,11 +857,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.secure(s -> s.signature("SHA256")))
             .build();
 
@@ -869,7 +869,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSecureName() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSecureName() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -884,11 +884,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.secure(s -> s.name("name@domain")))
             .build();
 
@@ -896,7 +896,7 @@ public class ProxyFunctionsTest
     }
 
     @Test(expected = Exception.class)
-    public void shouldNotMatchInetBeginExtensionSecureKey() throws Exception
+    public void shouldNotMatchInet4BeginExtensionSecureKey() throws Exception
     {
         BytesMatcher matcher = ProxyFunctions.matchBeginEx()
                                              .typeId(0x01)
@@ -911,11 +911,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .infosItem(i -> i.secure(s -> s.key("RSA2048")))
             .build();
 
@@ -1418,11 +1418,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x01)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         assertNull(matcher.match(byteBuf));
@@ -1439,11 +1439,11 @@ public class ProxyFunctionsTest
 
         new ProxyBeginExFW.Builder().wrap(new UnsafeBuffer(byteBuf), 0, byteBuf.capacity())
             .typeId(0x02)
-            .address(a -> a.inet(i -> i.protocol(p -> p.set(STREAM))
-                                       .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
-                                       .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
-                                       .sourcePort(32768)
-                                       .destinationPort(443)))
+            .address(a -> a.inet4(i -> i.protocol(p -> p.set(STREAM))
+                                        .source(new UnsafeBuffer(fromHex("c0a80001")), 0, 4)
+                                        .destination(new UnsafeBuffer(fromHex("c0a800fe")), 0, 4)
+                                        .sourcePort(32768)
+                                        .destinationPort(443)))
             .build();
 
         matcher.match(byteBuf);

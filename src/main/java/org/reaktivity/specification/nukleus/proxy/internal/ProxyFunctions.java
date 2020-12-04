@@ -47,11 +47,11 @@ import org.kaazing.k3po.lang.el.spi.FunctionMapperSpi;
 import org.reaktivity.specification.nukleus.proxy.internal.types.Array32FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.OctetsFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInet4FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInet6FW;
-import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInet4FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInet6FW;
-import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchUnixFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressUnixFW;
@@ -94,9 +94,9 @@ public final class ProxyFunctions
             this.routeExRW = new ProxyRouteExFW.Builder().wrap(writeBuffer, 0, writeBuffer.capacity());
         }
 
-        public ProxyAddressMatchInetBuilder addressInet()
+        public ProxyAddressMatchInet4Builder addressInet4()
         {
-            return new ProxyAddressMatchInetBuilder();
+            return new ProxyAddressMatchInet4Builder();
         }
 
         public ProxyAddressMatchInet6Builder addressInet6()
@@ -122,89 +122,89 @@ public final class ProxyFunctions
             return array;
         }
 
-        public final class ProxyAddressMatchInetBuilder
+        public final class ProxyAddressMatchInet4Builder
         {
             private final ProxyAddressMatchFW.Builder addressRW = new ProxyAddressMatchFW.Builder();
 
-            private final ProxyAddressMatchInetFW.Builder addressInetRW = new ProxyAddressMatchInetFW.Builder();
+            private final ProxyAddressMatchInet4FW.Builder addressInet4RW = new ProxyAddressMatchInet4FW.Builder();
 
-            private ProxyAddressMatchInetBuilder()
+            private ProxyAddressMatchInet4Builder()
             {
                 final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[20]);
                 addressRW.wrap(buffer, 0, buffer.capacity());
-                addressInetRW.wrap(buffer, 1, buffer.capacity());
+                addressInet4RW.wrap(buffer, 1, buffer.capacity());
             }
 
-            public ProxyAddressMatchInetBuilder protocol(
+            public ProxyAddressMatchInet4Builder protocol(
                 String protocol)
             {
-                addressInetRW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                addressInet4RW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
                 return this;
             }
 
-            public ProxyAddressMatchInetBuilder source(
+            public ProxyAddressMatchInet4Builder source(
                 String source) throws UnknownHostException
             {
                 return source(source, 4);
             }
 
-            public ProxyAddressMatchInetBuilder source(
+            public ProxyAddressMatchInet4Builder source(
                 String prefix,
                 int length) throws UnknownHostException
             {
                 final InetAddress inet = InetAddress.getByName(prefix);
                 final byte[] ip = inet.getAddress();
-                addressInetRW.source(s -> s.prefix(p -> p.set(ip)).length(length));
+                addressInet4RW.source(s -> s.prefix(p -> p.set(ip)).length(length));
                 return this;
             }
 
-            public ProxyAddressMatchInetBuilder destination(
+            public ProxyAddressMatchInet4Builder destination(
                 String destination) throws UnknownHostException
             {
                 return destination(destination, 4);
             }
 
-            public ProxyAddressMatchInetBuilder destination(
+            public ProxyAddressMatchInet4Builder destination(
                 String prefix,
                 int length) throws UnknownHostException
             {
                 final InetAddress inet = InetAddress.getByName(prefix);
                 final byte[] ip = inet.getAddress();
-                addressInetRW.destination(s -> s.prefix(p -> p.set(ip)).length(length));
+                addressInet4RW.destination(s -> s.prefix(p -> p.set(ip)).length(length));
                 return this;
             }
 
-            public ProxyAddressMatchInetBuilder sourcePort(
+            public ProxyAddressMatchInet4Builder sourcePort(
                 int sourcePort)
             {
                 return sourcePort(sourcePort, sourcePort);
             }
 
-            public ProxyAddressMatchInetBuilder sourcePort(
+            public ProxyAddressMatchInet4Builder sourcePort(
                 int low,
                 int high)
             {
-                addressInetRW.sourcePort(r -> r.low(low).high(high));
+                addressInet4RW.sourcePort(r -> r.low(low).high(high));
                 return this;
             }
 
-            public ProxyAddressMatchInetBuilder destinationPort(
+            public ProxyAddressMatchInet4Builder destinationPort(
                 int destinationPort)
             {
                 return destinationPort(destinationPort, destinationPort);
             }
 
-            public ProxyAddressMatchInetBuilder destinationPort(
+            public ProxyAddressMatchInet4Builder destinationPort(
                 int low,
                 int high)
             {
-                addressInetRW.destinationPort(r -> r.low(low).high(high));
+                addressInet4RW.destinationPort(r -> r.low(low).high(high));
                 return this;
             }
 
             public ProxyRouteExBuilder build()
             {
-                routeExRW.address(addressRW.inet(addressInetRW.build()).build());
+                routeExRW.address(addressRW.inet4(addressInet4RW.build()).build());
                 return ProxyRouteExBuilder.this;
             }
         }
@@ -455,9 +455,9 @@ public final class ProxyFunctions
             return this;
         }
 
-        public ProxyAddressInetBuilder addressInet()
+        public ProxyAddressInet4Builder addressInet4()
         {
-            return new ProxyAddressInetBuilder();
+            return new ProxyAddressInet4Builder();
         }
 
         public ProxyAddressInet6Builder addressInet6()
@@ -483,61 +483,61 @@ public final class ProxyFunctions
             return array;
         }
 
-        public final class ProxyAddressInetBuilder
+        public final class ProxyAddressInet4Builder
         {
             private final ProxyAddressFW.Builder addressRW = new ProxyAddressFW.Builder();
 
-            private final ProxyAddressInetFW.Builder addressInetRW = new ProxyAddressInetFW.Builder();
+            private final ProxyAddressInet4FW.Builder addressInet4RW = new ProxyAddressInet4FW.Builder();
 
-            private ProxyAddressInetBuilder()
+            private ProxyAddressInet4Builder()
             {
                 final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[14]);
                 addressRW.wrap(buffer, 0, buffer.capacity());
-                addressInetRW.wrap(buffer, 1, buffer.capacity());
+                addressInet4RW.wrap(buffer, 1, buffer.capacity());
             }
 
-            public ProxyAddressInetBuilder protocol(
+            public ProxyAddressInet4Builder protocol(
                 String protocol)
             {
-                addressInetRW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
+                addressInet4RW.protocol(p -> p.set(ProxyAddressProtocol.valueOf(protocol.toUpperCase())));
                 return this;
             }
 
-            public ProxyAddressInetBuilder source(
+            public ProxyAddressInet4Builder source(
                 String source) throws UnknownHostException
             {
                 final InetAddress inet = InetAddress.getByName(source);
                 final byte[] ip = inet.getAddress();
-                addressInetRW.source(s -> s.set(ip));
+                addressInet4RW.source(s -> s.set(ip));
                 return this;
             }
 
-            public ProxyAddressInetBuilder destination(
+            public ProxyAddressInet4Builder destination(
                 String destination) throws UnknownHostException
             {
                 final InetAddress inet = InetAddress.getByName(destination);
                 final byte[] ip = inet.getAddress();
-                addressInetRW.destination(s -> s.set(ip));
+                addressInet4RW.destination(s -> s.set(ip));
                 return this;
             }
 
-            public ProxyAddressInetBuilder sourcePort(
+            public ProxyAddressInet4Builder sourcePort(
                 int sourcePort)
             {
-                addressInetRW.sourcePort(sourcePort);
+                addressInet4RW.sourcePort(sourcePort);
                 return this;
             }
 
-            public ProxyAddressInetBuilder destinationPort(
+            public ProxyAddressInet4Builder destinationPort(
                 int destinationPort)
             {
-                addressInetRW.destinationPort(destinationPort);
+                addressInet4RW.destinationPort(destinationPort);
                 return this;
             }
 
             public ProxyBeginExBuilder build()
             {
-                beginExRW.address(addressRW.inet(addressInetRW.build()).build());
+                beginExRW.address(addressRW.inet4(addressInet4RW.build()).build());
                 return ProxyBeginExBuilder.this;
             }
         }
@@ -762,7 +762,7 @@ public final class ProxyFunctions
             return this;
         }
 
-        public ProxyAddressInetMatcherBuilder addressInet()
+        public ProxyAddressInetMatcherBuilder addressInet4()
         {
             final ProxyAddressInetMatcherBuilder matcher = new ProxyAddressInetMatcherBuilder();
 
@@ -899,47 +899,47 @@ public final class ProxyFunctions
             private boolean match(
                 ProxyAddressFW address)
             {
-                return address.kind() == INET && match(address.inet());
+                return address.kind() == INET && match(address.inet4());
             }
 
             private boolean match(
-                ProxyAddressInetFW inet)
+                ProxyAddressInet4FW inet4)
             {
-                return matchProtocol(inet) &&
-                    matchSource(inet) &&
-                    matchDestination(inet) &&
-                    matchSourcePort(inet) &&
-                    matchDestinationPort(inet);
+                return matchProtocol(inet4) &&
+                    matchSource(inet4) &&
+                    matchDestination(inet4) &&
+                    matchSourcePort(inet4) &&
+                    matchDestinationPort(inet4);
             }
 
             private boolean matchProtocol(
-                final ProxyAddressInetFW inet)
+                final ProxyAddressInet4FW inet4)
             {
-                return protocol == null || protocol == inet.protocol().get();
+                return protocol == null || protocol == inet4.protocol().get();
             }
 
             private boolean matchSource(
-                final ProxyAddressInetFW inet)
+                final ProxyAddressInet4FW inet4)
             {
-                return source == null || source.equals(inet.source());
+                return source == null || source.equals(inet4.source());
             }
 
             private boolean matchDestination(
-                final ProxyAddressInetFW inet)
+                final ProxyAddressInet4FW inet4)
             {
-                return destination == null || destination.equals(inet.destination());
+                return destination == null || destination.equals(inet4.destination());
             }
 
             private boolean matchSourcePort(
-                final ProxyAddressInetFW inet)
+                final ProxyAddressInet4FW inet4)
             {
-                return sourcePort == null || sourcePort == inet.sourcePort();
+                return sourcePort == null || sourcePort == inet4.sourcePort();
             }
 
             private boolean matchDestinationPort(
-                final ProxyAddressInetFW inet)
+                final ProxyAddressInet4FW inet4)
             {
-                return destinationPort == null || destinationPort == inet.destinationPort();
+                return destinationPort == null || destinationPort == inet4.destinationPort();
             }
         }
 
