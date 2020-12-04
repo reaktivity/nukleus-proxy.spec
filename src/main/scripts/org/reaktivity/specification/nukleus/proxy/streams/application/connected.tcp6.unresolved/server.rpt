@@ -14,19 +14,20 @@
 # under the License.
 #
 
-accept "nukleus://streams/net#0"
+accept "nukleus://streams/app#0"
        option nukleus:window 8192
        option nukleus:transmission "half-duplex"
 accepted
 
-connected
+read nukleus:begin.ext ${proxy:matchBeginEx()
+                              .typeId(nukleus:id("proxy"))
+                              .addressInet()
+                                .protocol("stream")
+                                .source("fd12:3456:789a:1::1")
+                                .destination("example.com")
+                                .sourcePort(32768)
+                                .destinationPort(443)
+                                .build()
+                              .build()}
 
-read "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"           # header
-     [0x21]                                         # version = 2, command = proxy
-     [0x11]                                         # protocol = tcp4
-     [0x00 0x13]                                    # length
-     [0xc0 0xa8 0x00 0x01]                          # source address = 192.168.0.1
-     [0xc0 0xa8 0x00 0xfe]                          # destination address = 192.168.0.254
-     [0x80 0x00]                                    # source port = 32768
-     [0x01 0xbb]                                    # destination port = 443
-     [0x05 0x00 0x04] [0x12 0x34 0x56 0x78]         # identity = 0x12345678
+connected

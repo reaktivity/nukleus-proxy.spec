@@ -14,18 +14,20 @@
 # under the License.
 #
 
-connect await ROUTED_SERVER
-        "nukleus://streams/net#0"
+connect await ROUTED_CLIENT
+        "nukleus://streams/app#0"
     option nukleus:window 8192
     option nukleus:transmission "half-duplex"
-connected
 
-write "\r\n\r\n" [0x00] "\r\n" "QUIT" "\n"          # header
-      [0x21]                                        # version = 2, command = proxy
-      [0x12]                                        # protocol = udp4
-      [0x00 0x0c]                                   # length
-      [0xc0 0xa8 0x00 0x01]                         # source address = 192.168.0.1
-      [0xc0 0xa8 0x00 0xfe]                         # destination address = 192.168.0.254
-      [0x80 0x00]                                   # source port = 32768
-      [0x01 0xbb]                                   # destination port = 443
-write flush
+write nukleus:begin.ext ${proxy:beginEx()
+                               .typeId(nukleus:id("proxy"))
+                               .addressInet()
+                                 .protocol("stream")
+                                 .source("fd12:3456:789a:1::1")
+                                 .destination("example.com")
+                                 .sourcePort(32768)
+                                 .destinationPort(443)
+                                 .build()
+                               .build()}
+
+connected
