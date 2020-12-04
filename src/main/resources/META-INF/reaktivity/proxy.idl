@@ -17,6 +17,7 @@ scope proxy
 {
     enum ProxyAddressFamily
     {
+        INET,
         INET4,
         INET6,
         UNIX
@@ -26,6 +27,15 @@ scope proxy
     {
         STREAM,
         DATAGRAM
+    }
+
+    struct ProxyAddressInet
+    {
+        ProxyAddressProtocol protocol;
+        string16 source;
+        string16 destination;
+        uint16 sourcePort;
+        uint16 destinationPort;
     }
 
     struct ProxyAddressInet4
@@ -55,6 +65,7 @@ scope proxy
 
     union ProxyAddress switch (ProxyAddressFamily)
     {
+        case INET: ProxyAddressInet inet;
         case INET4: ProxyAddressInet4 inet4;
         case INET6: ProxyAddressInet6 inet6;
         case UNIX: ProxyAddressUnix unix;
@@ -102,6 +113,11 @@ scope proxy
         case SECURE: ProxySecureInfo secure;
     }
 
+    struct ProxyAddressRangeInet
+    {
+        string16 pattern;
+    }
+
     struct ProxyAddressRangeInet4
     {
         octets[4] prefix;
@@ -124,6 +140,15 @@ scope proxy
     {
         uint16 low;
         uint16 high;
+    }
+
+    struct ProxyAddressMatchInet
+    {
+        ProxyAddressProtocol protocol;
+        ProxyAddressRangeInet source;
+        ProxyAddressRangeInet destination;
+        ProxyPortRange sourcePort;
+        ProxyPortRange destinationPort;
     }
 
     struct ProxyAddressMatchInet4
@@ -153,6 +178,7 @@ scope proxy
 
     union ProxyAddressMatch switch (ProxyAddressFamily)
     {
+        case INET: ProxyAddressMatchInet inet;
         case INET4: ProxyAddressMatchInet4 inet4;
         case INET6: ProxyAddressMatchInet6 inet6;
         case UNIX: ProxyAddressMatchUnix unix;

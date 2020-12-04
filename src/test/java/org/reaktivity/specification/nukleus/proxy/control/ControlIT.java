@@ -107,6 +107,16 @@ public class ControlIT
 
     @Test
     @Specification({
+        "route/client.tcp/nukleus",
+        "route/client.tcp/controller"
+    })
+    public void shouldRouteClientTcp() throws Exception
+    {
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "unroute/server/nukleus",
         "unroute/server/controller"
     })

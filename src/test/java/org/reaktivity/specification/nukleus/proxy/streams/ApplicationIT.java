@@ -200,7 +200,6 @@ public class ApplicationIT
         k3po.finish();
     }
 
-
     @Test
     @Specification({
         "${scripts}/connected.tcp4/client",
@@ -335,6 +334,17 @@ public class ApplicationIT
 
     @Test
     @Specification({
+        "${scripts}/connected.tcp4.unresolved/client",
+        "${scripts}/connected.tcp4.unresolved/server"})
+    public void shouldConnectTcp4Unresolved() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_CLIENT");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
         "${scripts}/connected.udp4/client",
         "${scripts}/connected.udp4/server"})
     public void shouldConnectUdp4() throws Exception
@@ -349,6 +359,17 @@ public class ApplicationIT
         "${scripts}/connected.tcp6/client",
         "${scripts}/connected.tcp6/server"})
     public void shouldConnectTcp6() throws Exception
+    {
+        k3po.start();
+        k3po.notifyBarrier("ROUTED_CLIENT");
+        k3po.finish();
+    }
+
+    @Test
+    @Specification({
+        "${scripts}/connected.tcp6.unresolved/client",
+        "${scripts}/connected.tcp6.unresolved/server"})
+    public void shouldConnectTcp6Unresolved() throws Exception
     {
         k3po.start();
         k3po.notifyBarrier("ROUTED_CLIENT");
