@@ -20,7 +20,8 @@ scope proxy
         INET,
         INET4,
         INET6,
-        UNIX
+        UNIX,
+        NONE
     }
 
     enum ProxyAddressProtocol
@@ -63,12 +64,17 @@ scope proxy
         octets[108] destination;
     }
 
+    struct ProxyAddressNone
+    {
+    }
+
     union ProxyAddress switch (ProxyAddressFamily)
     {
         case INET: ProxyAddressInet inet;
         case INET4: ProxyAddressInet4 inet4;
         case INET6: ProxyAddressInet6 inet6;
         case UNIX: ProxyAddressUnix unix;
+        case NONE: ProxyAddressNone none;
     }
 
     struct ProxyIdentity

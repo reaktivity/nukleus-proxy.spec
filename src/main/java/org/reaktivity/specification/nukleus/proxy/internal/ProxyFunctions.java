@@ -19,6 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET4;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.INET6;
+import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.NONE;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressFamily.UNIX;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.ALPN;
 import static org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoType.AUTHORITY;
@@ -56,6 +57,7 @@ import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMat
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInet6FW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchInetFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressMatchUnixFW;
+import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressNoneFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressProtocol;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyAddressUnixFW;
 import org.reaktivity.specification.nukleus.proxy.internal.types.ProxyInfoFW;
@@ -552,6 +554,11 @@ public final class ProxyFunctions
             return new ProxyAddressUnixBuilder();
         }
 
+        public ProxyAddressNoneBuilder addressNone()
+        {
+            return new ProxyAddressNoneBuilder();
+        }
+
         public ProxyInfoBuilder info()
         {
             return new ProxyInfoBuilder();
@@ -783,6 +790,26 @@ public final class ProxyFunctions
             }
         }
 
+        public final class ProxyAddressNoneBuilder
+        {
+            private final ProxyAddressFW.Builder addressRW = new ProxyAddressFW.Builder();
+
+            private final ProxyAddressNoneFW.Builder addressNoneRW = new ProxyAddressNoneFW.Builder();
+
+            private ProxyAddressNoneBuilder()
+            {
+                final MutableDirectBuffer buffer = new UnsafeBuffer(new byte[1]);
+                addressRW.wrap(buffer, 0, buffer.capacity());
+                addressNoneRW.wrap(buffer, 1, buffer.capacity());
+            }
+
+            public ProxyBeginExBuilder build()
+            {
+                beginExRW.address(addressRW.none(addressNoneRW.build()).build());
+                return ProxyBeginExBuilder.this;
+            }
+        }
+
         public final class ProxyInfoBuilder
         {
             private final Array32FW.Builder<ProxyInfoFW.Builder, ProxyInfoFW> infosRW =
@@ -926,6 +953,14 @@ public final class ProxyFunctions
         public ProxyAddressUnixMatcherBuilder addressUnix()
         {
             final ProxyAddressUnixMatcherBuilder matcher = new ProxyAddressUnixMatcherBuilder();
+
+            this.address = matcher::match;
+            return matcher;
+        }
+
+        public ProxyAddressNoneMatcherBuilder addressNone()
+        {
+            final ProxyAddressNoneMatcherBuilder matcher = new ProxyAddressNoneMatcherBuilder();
 
             this.address = matcher::match;
             return matcher;
@@ -1360,6 +1395,24 @@ public final class ProxyFunctions
                 final ProxyAddressUnixFW unix)
             {
                 return destination == null || destination.equals(unix.destination().value());
+            }
+        }
+
+        public final class ProxyAddressNoneMatcherBuilder
+        {
+            private ProxyAddressNoneMatcherBuilder()
+            {
+            }
+
+            public ProxyBeginExMatcherBuilder build()
+            {
+                return ProxyBeginExMatcherBuilder.this;
+            }
+
+            private boolean match(
+                ProxyAddressFW address)
+            {
+                return address.kind() == NONE;
             }
         }
 
