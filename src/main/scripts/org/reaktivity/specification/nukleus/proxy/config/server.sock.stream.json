@@ -6,21 +6,18 @@
             "type" : "proxy",
             "kind": "server",
             "routes":
-            {
-                "exit": "app#0",
-                "when":
-                [
-                    {
-                        "transport": "stream",
-                        "family": "unix",
-                        "destination":
+            [
+                {
+                    "exit": "app#0",
+                    "when":
+                    [
                         {
-                            "host": "example.com",
-                            "port": 443
+                            "transport": "stream",
+                            "family": "unix"
                         }
-                    }
-                ]
-            }
+                    ]
+                }
+            ]
         }
     ]
 }

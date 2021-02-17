@@ -6,21 +6,23 @@
             "type" : "proxy",
             "kind": "client",
             "routes":
-            {
-                "exit": "net#0",
-                "when":
-                [
-                    {
-                        "transport": "stream",
-                        "family": "inet",
-                        "destination":
+            [
+                {
+                    "exit": "net#0",
+                    "when":
+                    [
                         {
-                            "host": "example.com",
-                            "port": 443
+                            "transport": "stream",
+                            "family": "inet",
+                            "destination":
+                            {
+                                "host": "example.com",
+                                "port": 443
+                            }
                         }
-                    }
-                ]
-            }
+                    ]
+                }
+            ]
         }
     ]
 }

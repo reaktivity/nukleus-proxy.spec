@@ -6,27 +6,29 @@
             "type" : "proxy",
             "kind": "server",
             "routes":
-            {
-                "exit": "app#0",
-                "when":
-                [
-                    {
-                        "transport": "stream",
-                        "family": "inet4",
-                        "destination":
+            [
+                {
+                    "exit": "app#0",
+                    "when":
+                    [
                         {
-                            "port": 443
-                        },
-                        "info":
-                        {
-                            "secure":
+                            "transport": "stream",
+                            "family": "inet4",
+                            "destination":
                             {
-                                "version": "TLSv1.3"
+                                "port": 443
+                            },
+                            "info":
+                            {
+                                "secure":
+                                {
+                                    "version": "TLSv1.3"
+                                }
                             }
                         }
-                    }
-                ]
-            }
+                    ]
+                }
+            ]
         }
     ]
 }

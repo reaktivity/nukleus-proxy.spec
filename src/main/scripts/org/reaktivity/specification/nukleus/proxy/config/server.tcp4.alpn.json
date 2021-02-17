@@ -6,24 +6,26 @@
             "type" : "proxy",
             "kind": "server",
             "routes":
-            {
-                "exit": "app#0",
-                "when":
-                [
-                    {
-                        "transport": "stream",
-                        "family": "inet4",
-                        "destination":
+            [
+                {
+                    "exit": "app#0",
+                    "when":
+                    [
                         {
-                            "port": 443
-                        },
-                        "info":
-                        {
-                            "alpn": "echo"
+                            "transport": "stream",
+                            "family": "inet4",
+                            "destination":
+                            {
+                                "port": 443
+                            },
+                            "info":
+                            {
+                                "alpn": "echo"
+                            }
                         }
-                    }
-                ]
-            }
+                    ]
+                }
+            ]
         }
     ]
 }
