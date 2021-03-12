@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
-import org.agrona.collections.MutableBoolean;
+import org.agrona.collections.MutableInteger;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.kaazing.k3po.lang.el.BytesMatcher;
 import org.kaazing.k3po.lang.el.Function;
@@ -978,6 +978,7 @@ public final class ProxyFunctions
         public final class ProxyInfoMatcherBuilder
         {
             private final Map<ProxyInfoType, Predicate<ProxyInfoFW>> matchers;
+            private ProxySecureInfoMatcherBuilder secure;
 
             private ProxyInfoMatcherBuilder()
             {
@@ -1018,9 +1019,12 @@ public final class ProxyFunctions
 
             public ProxySecureInfoMatcherBuilder secure()
             {
-                final ProxySecureInfoMatcherBuilder matcher = new ProxySecureInfoMatcherBuilder();
-                matchers.put(SECURE, info -> matcher.match(info.secure()));
-                return matcher;
+                if (secure == null)
+                {
+                    secure = new ProxySecureInfoMatcherBuilder();
+                }
+                matchers.put(SECURE, info -> secure.match(info.secure()));
+                return secure;
             }
 
             public ProxyBeginExMatcherBuilder build()
@@ -1031,9 +1035,11 @@ public final class ProxyFunctions
             private boolean match(
                 Array32FW<ProxyInfoFW> infos)
             {
-                MutableBoolean match = new MutableBoolean(true);
-                infos.forEach(info -> match.value &= match(info));
-                return match.value;
+                MutableInteger match = new MutableInteger(0);
+                infos.forEach(info -> match.value += match(info) ? 1 : 0);
+                return match.value == (matchers.containsKey(SECURE)
+                        ? matchers.size() + secure.matchers.size() - 1
+                        : matchers.size());
             }
 
             private boolean match(
