@@ -1046,7 +1046,7 @@ public final class ProxyFunctions
                 ProxyInfoFW info)
             {
                 final Predicate<ProxyInfoFW> matcher = matchers.get(info.kind());
-                return matcher == null || matcher.test(info);
+                return matcher != null && matcher.test(info);
             }
 
             public final class ProxySecureInfoMatcherBuilder
@@ -1107,7 +1107,7 @@ public final class ProxyFunctions
                     ProxySecureInfoFW secureInfo)
                 {
                     final Predicate<ProxySecureInfoFW> matcher = matchers.get(secureInfo.kind());
-                    return matcher == null || matcher.test(secureInfo);
+                    return matcher != null && matcher.test(secureInfo);
                 }
             }
         }
