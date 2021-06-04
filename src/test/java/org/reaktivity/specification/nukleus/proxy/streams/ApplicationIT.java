@@ -29,7 +29,7 @@ import org.kaazing.k3po.junit.rules.K3poRule;
 public class ApplicationIT
 {
     private final K3poRule k3po = new K3poRule()
-        .addScriptRoot("scripts", "org/reaktivity/specification/nukleus/proxy/streams/application");
+        .addScriptRoot("app", "org/reaktivity/specification/nukleus/proxy/streams/application");
 
     private final TestRule timeout = new DisableOnDebug(new Timeout(5, SECONDS));
 
@@ -38,374 +38,306 @@ public class ApplicationIT
 
     @Test
     @Specification({
-        "${scripts}/connected.local/client",
-        "${scripts}/connected.local/server"})
+        "${app}/connected.local/client",
+        "${app}/connected.local/server"})
     public void shouldConnectLocal() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.discard/client",
-        "${scripts}/connected.local.discard/server"})
+        "${app}/connected.local.discard/client",
+        "${app}/connected.local.discard/server"})
     public void shouldConnectLocalDiscard() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.begin.ext/client",
-        "${scripts}/connected.local.client.sent.begin.ext/server"})
+        "${app}/connected.local.client.sent.begin.ext/client",
+        "${app}/connected.local.client.sent.begin.ext/server"})
     public void shouldConnectLocalClientSendsBeginExt() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.data/client",
-        "${scripts}/connected.local.client.sent.data/server"})
+        "${app}/connected.local.client.sent.data/client",
+        "${app}/connected.local.client.sent.data/server"})
     public void shouldConnectLocalClientSendsData() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.flush/client",
-        "${scripts}/connected.local.client.sent.flush/server"})
+        "${app}/connected.local.client.sent.flush/client",
+        "${app}/connected.local.client.sent.flush/server"})
     public void shouldConnectLocalClientSendsFlush() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.challenge/client",
-        "${scripts}/connected.local.client.sent.challenge/server"})
+        "${app}/connected.local.client.sent.challenge/client",
+        "${app}/connected.local.client.sent.challenge/server"})
     public void shouldConnectLocalClientSendsChallenge() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.close/client",
-        "${scripts}/connected.local.client.sent.close/server"})
+        "${app}/connected.local.client.sent.close/client",
+        "${app}/connected.local.client.sent.close/server"})
     public void shouldConnectLocalClientSendsClose() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.abort/client",
-        "${scripts}/connected.local.client.sent.abort/server"})
+        "${app}/connected.local.client.sent.abort/client",
+        "${app}/connected.local.client.sent.abort/server"})
     public void shouldConnectLocalClientSendsAbort() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.client.sent.reset/client",
-        "${scripts}/connected.local.client.sent.reset/server"})
+        "${app}/connected.local.client.sent.reset/client",
+        "${app}/connected.local.client.sent.reset/server"})
     public void shouldConnectLocalClientSendsReset() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.data/client",
-        "${scripts}/connected.local.server.sent.data/server"})
+        "${app}/connected.local.server.sent.data/client",
+        "${app}/connected.local.server.sent.data/server"})
     public void shouldConnectLocalServerSendsData() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.flush/client",
-        "${scripts}/connected.local.server.sent.flush/server"})
+        "${app}/connected.local.server.sent.flush/client",
+        "${app}/connected.local.server.sent.flush/server"})
     public void shouldConnectLocalServerSendsFlush() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.challenge/client",
-        "${scripts}/connected.local.server.sent.challenge/server"})
+        "${app}/connected.local.server.sent.challenge/client",
+        "${app}/connected.local.server.sent.challenge/server"})
     public void shouldConnectLocalServerSendsChallenge() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.close/client",
-        "${scripts}/connected.local.server.sent.close/server"})
+        "${app}/connected.local.server.sent.close/client",
+        "${app}/connected.local.server.sent.close/server"})
     public void shouldConnectLocalServerSendsClose() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.abort/client",
-        "${scripts}/connected.local.server.sent.abort/server"})
+        "${app}/connected.local.server.sent.abort/client",
+        "${app}/connected.local.server.sent.abort/server"})
     public void shouldConnectLocalServerSendsAbort() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
     @Test
     @Specification({
-        "${scripts}/connected.local.server.sent.reset/client",
-        "${scripts}/connected.local.server.sent.reset/server"})
+        "${app}/connected.local.server.sent.reset/client",
+        "${app}/connected.local.server.sent.reset/server"})
     public void shouldConnectLocalServerSendsReset() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4/client",
-        "${scripts}/connected.tcp4/server"})
+        "${app}/connected.tcp4/client",
+        "${app}/connected.tcp4/server"})
     public void shouldConnectTcp4() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.alpn/client",
-        "${scripts}/connected.tcp4.alpn/server"})
+        "${app}/connected.tcp4.alpn/client",
+        "${app}/connected.tcp4.alpn/server"})
     public void shouldConnectTcp4WithAlpn() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.authority/client",
-        "${scripts}/connected.tcp4.authority/server"})
+        "${app}/connected.tcp4.authority/client",
+        "${app}/connected.tcp4.authority/server"})
     public void shouldConnectTcp4WithAuthority() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.crc32c/client",
-        "${scripts}/connected.tcp4.crc32c/server"})
+        "${app}/connected.tcp4.crc32c/client",
+        "${app}/connected.tcp4.crc32c/server"})
     public void shouldConnectTcp4WithCrc32c() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.identity/client",
-        "${scripts}/connected.tcp4.identity/server"})
+        "${app}/connected.tcp4.identity/client",
+        "${app}/connected.tcp4.identity/server"})
     public void shouldConnectTcp4WithIdentity() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.namespace/client",
-        "${scripts}/connected.tcp4.namespace/server"})
+        "${app}/connected.tcp4.namespace/client",
+        "${app}/connected.tcp4.namespace/server"})
     public void shouldConnectTcp4WithNamespace() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.noop/client",
-        "${scripts}/connected.tcp4.noop/server"})
+        "${app}/connected.tcp4.noop/client",
+        "${app}/connected.tcp4.noop/server"})
     public void shouldConnectTcp4WithNoop() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.ssl/client",
-        "${scripts}/connected.tcp4.ssl/server"})
+        "${app}/connected.tcp4.ssl/client",
+        "${app}/connected.tcp4.ssl/server"})
     public void shouldConnectTcp4WithSsl() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.ssl.client.cert/client",
-        "${scripts}/connected.tcp4.ssl.client.cert/server"})
+        "${app}/connected.tcp4.ssl.client.cert/client",
+        "${app}/connected.tcp4.ssl.client.cert/server"})
     public void shouldConnectTcp4WithSslClientCertificate() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.ssl.client.cert.session/client",
-        "${scripts}/connected.tcp4.ssl.client.cert.session/server"})
+        "${app}/connected.tcp4.ssl.client.cert.session/client",
+        "${app}/connected.tcp4.ssl.client.cert.session/server"})
     public void shouldConnectTcp4WithSslClientCertificateSession() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.ssl.experimental/client",
-        "${scripts}/connected.tcp4.ssl.experimental/server"})
+        "${app}/connected.tcp4.ssl.experimental/client",
+        "${app}/connected.tcp4.ssl.experimental/server"})
     public void shouldConnectTcp4WithSslExperimental() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.experimental/client",
-        "${scripts}/connected.tcp4.experimental/server"})
+        "${app}/connected.tcp4.experimental/client",
+        "${app}/connected.tcp4.experimental/server"})
     public void shouldConnectTcp4WithExperimental() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp4.unresolved/client",
-        "${scripts}/connected.tcp4.unresolved/server"})
+        "${app}/connected.tcp4.unresolved/client",
+        "${app}/connected.tcp4.unresolved/server"})
     public void shouldConnectTcp4Unresolved() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.udp4/client",
-        "${scripts}/connected.udp4/server"})
+        "${app}/connected.udp4/client",
+        "${app}/connected.udp4/server"})
     public void shouldConnectUdp4() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp6/client",
-        "${scripts}/connected.tcp6/server"})
+        "${app}/connected.tcp6/client",
+        "${app}/connected.tcp6/server"})
     public void shouldConnectTcp6() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.tcp6.unresolved/client",
-        "${scripts}/connected.tcp6.unresolved/server"})
+        "${app}/connected.tcp6.unresolved/client",
+        "${app}/connected.tcp6.unresolved/server"})
     public void shouldConnectTcp6Unresolved() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.udp6/client",
-        "${scripts}/connected.udp6/server"})
+        "${app}/connected.udp6/client",
+        "${app}/connected.udp6/server"})
     public void shouldConnectUdp6() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.sock.stream/client",
-        "${scripts}/connected.sock.stream/server"})
+        "${app}/connected.sock.stream/client",
+        "${app}/connected.sock.stream/server"})
     public void shouldConnectSockStream() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 
     @Test
     @Specification({
-        "${scripts}/connected.sock.datagram/client",
-        "${scripts}/connected.sock.datagram/server"})
+        "${app}/connected.sock.datagram/client",
+        "${app}/connected.sock.datagram/server"})
     public void shouldConnectSockDatagram() throws Exception
     {
-        k3po.start();
-        k3po.notifyBarrier("ROUTED_CLIENT");
         k3po.finish();
     }
 }
