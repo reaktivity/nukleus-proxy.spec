@@ -14,8 +14,7 @@
 # under the License.
 #
 
-connect await ROUTED_SERVER
-        "nukleus://streams/net#0"
+connect "nukleus://streams/net#0"
     option nukleus:window 8192
     option nukleus:transmission "half-duplex"
 connected
